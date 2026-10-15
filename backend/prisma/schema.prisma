@@ -1,0 +1,191 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  EMPLOYEE
+  AGENT
+  MANAGER
+  ADMIN
+}
+enum TicketStatus {
+  OPEN
+  ASSIGNED
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+  REOPENED
+}
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+enum TicketOrigin {
+  MANUAL
+  AI_ESCALATION
+}
+enum ArticleStatus {
+  DRAFT
+  UNDER_REVIEW
+  APPROVED
+  PUBLISHED
+  ARCHIVED
+}
+enum ActorType {
+  HUMAN
+  AI
+  SYSTEM
+}
+enum AiOutcome {
+  DEFLECTED
+  REJECTED
+  ESCALATED
+}
+
+model User {
+  id               Int       @id @default(autoincrement())
+  email            String    @unique
+  passwordHash     String
+  fullName         String
+  role             Role
+  isActive         Boolean   @default(true)
+  failedLoginCount Int       @default(0)
+  lockedUntil      DateTime?
+  createdAt        DateTime  @default(now())
+  requested        Ticket[]  @relation("Requester")
+  assigned         Ticket[]  @relation("Agent")
+  authored         KbArticle[] @relation("Author")
+  reviewed         KbArticle[] @relation("Reviewer")
+  interactions     AiInteraction[]
+  notifications    Notification[]
+}
+
+model Category {
+  id       Int         @id @default(autoincrement())
+  name     String      @unique
+  isActive Boolean     @default(true)
+  tickets  Ticket[]
+  articles KbArticle[]
+}
+
+model Ticket {
+  id                String       @id // TCK-YYYYMMDD-XXXXXX
+  title             String
+  description       String
+  status            TicketStatus @default(OPEN)
+  priority          Priority     @default(MEDIUM)
+  origin            TicketOrigin @default(MANUAL)
+  categoryId        Int?
+  category          Category?    @relation(fields: [categoryId], references: [id])
+  requesterId       Int
+  requester         User         @relation("Requester", fields: [requesterId], references: [id])
+  assignedAgentId   Int?
+  assignedAgent     User?        @relation("Agent", fields: [assignedAgentId], references: [id])
+  affectedDevice    String?
+  location          String?
+  resolutionNotes   String?
+  satisfactionRating Int?
+  createdAt         DateTime     @default(now())
+  assignedAt        DateTime?
+  resolvedAt        DateTime?
+  closedAt          DateTime?
+  attachments       Attachment[]
+  auditLogs         AuditLog[]
+  notifications     Notification[]
+  interactions      AiInteraction[]
+  articles          KbArticle[]
+  @@index([status, priority])
+  @@index([requesterId])
+}
+
+model Attachment {
+  id          Int      @id @default(autoincrement())
+  ticketId    String
+  ticket      Ticket   @relation(fields: [ticketId], references: [id])
+  fileName    String
+  mimeType    String
+  sizeBytes   Int
+  storagePath String
+  uploadedBy  Int
+  uploadedAt  DateTime @default(now())
+}
+
+model AuditLog {
+  id        Int       @id @default(autoincrement())
+  ticketId  String?
+  ticket    Ticket?   @relation(fields: [ticketId], references: [id])
+  actorType ActorType @default(HUMAN)
+  actorId   Int?
+  action    String
+  oldValue  Json?
+  newValue  Json?
+  createdAt DateTime  @default(now())
+  @@index([ticketId])
+}
+
+model KbArticle {
+  id             Int           @id @default(autoincrement())
+  title          String
+  content        String
+  status         ArticleStatus @default(DRAFT)
+  categoryId     Int?
+  category       Category?     @relation(fields: [categoryId], references: [id])
+  tags           String[]
+  authorId       Int
+  author         User          @relation("Author", fields: [authorId], references: [id])
+  reviewerId     Int?
+  reviewer       User?         @relation("Reviewer", fields: [reviewerId], references: [id])
+  sourceTicketId String?
+  sourceTicket   Ticket?       @relation(fields: [sourceTicketId], references: [id])
+  visibilityRole Role          @default(EMPLOYEE)
+  version        Int           @default(1)
+  createdAt      DateTime      @default(now())
+  publishedAt    DateTime?
+}
+
+model AiInteraction {
+  id              Int       @id @default(autoincrement())
+  userId          Int
+  user            User      @relation(fields: [userId], references: [id])
+  ticketId        String?
+  ticket          Ticket?   @relation(fields: [ticketId], references: [id])
+  querySanitized  String
+  answer          String?
+  citations       Json?
+  similarityScore Float?
+  modelUsed       String?
+  outcome         AiOutcome?
+  latencyMs       Int?
+  createdAt       DateTime  @default(now())
+  feedback        AiFeedback[]
+}
+
+model AiFeedback {
+  id            Int           @id @default(autoincrement())
+  interactionId Int
+  interaction   AiInteraction @relation(fields: [interactionId], references: [id])
+  userId        Int
+  rating        Int
+  comment       String?
+  createdAt     DateTime      @default(now())
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  ticketId  String?
+  ticket    Ticket?  @relation(fields: [ticketId], references: [id])
+  message   String
+  channel   String   @default("in_app")
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
