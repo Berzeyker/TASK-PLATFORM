@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import { z } from 'zod';
 import { prisma } from '../prisma';
 import { config } from '../config';
+import { authenticate } from '../middleware/auth';
 import { asyncHandler, HttpError } from '../utils/http';
 
 export const authRouter = Router();
@@ -28,4 +29,14 @@ authRouter.post('/login', limiter, asyncHandler(async (req, res) => {
   await prisma.user.update({ where: { id: user.id }, data: { failedLoginCount: 0, lockedUntil: null } });
   const accessToken = jwt.sign({ role: user.role }, config.jwtSecret, { subject: String(user.id), expiresIn: config.jwtExpiresInSeconds });
   res.json({ accessToken, role: user.role });
+}));
+
+// Current user profile (the frontend uses it to build role-based navigation)
+authRouter.get('/me', authenticate, asyncHandler(async (req, res) => {
+  const u = await prisma.user.findUnique({
+    where: { id: req.user!.id },
+    select: { id: true, email: true, fullName: true, role: true, isActive: true },
+  });
+  if (!u || !u.isActive) throw new HttpError(401, 'Invalid or expired token');
+  res.json(u);
 }));
