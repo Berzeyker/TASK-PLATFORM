@@ -16,7 +16,7 @@ export class ApiError extends Error {
 type ApiOptions = {
   token?: string
   body?: unknown
-  method?: 'GET' | 'POST'
+  method?: 'GET' | 'POST' | 'PUT'
 }
 
 export async function apiRequest<T>(path: string, options: ApiOptions = {}): Promise<T> {
@@ -90,6 +90,15 @@ export function readSession(): AuthSession | null {
 export function readEmployeeSession(): AuthSession | null {
   const session = readSession()
   if (session && session.role !== 'EMPLOYEE') {
+    clearSession()
+    return null
+  }
+  return session
+}
+
+export function readPortalSession(): AuthSession | null {
+  const session = readSession()
+  if (session && session.role !== 'EMPLOYEE' && session.role !== 'ADMIN') {
     clearSession()
     return null
   }

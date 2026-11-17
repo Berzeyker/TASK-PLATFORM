@@ -1,6 +1,8 @@
 # TASK Dashboard
 
-Portal para que los trabajadores inicien sesión, creen solicitudes de soporte y consulten sus tickets.
+Portal para que los trabajadores creen y consulten solicitudes de soporte, y para que los administradores gestionen la cola de tickets.
+
+Las cuentas con rol `ADMIN` acceden al panel administrativo después de iniciar sesión. Desde ahí pueden revisar tickets de todos los trabajadores, buscar y filtrar solicitudes, asignarlas a agentes activos y actualizar su prioridad, estado y notas de resolución.
 
 ## Tecnologías
 

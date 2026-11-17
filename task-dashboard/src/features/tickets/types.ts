@@ -23,6 +23,17 @@ export type Ticket = {
   assignedAt?: string | null
   resolvedAt?: string | null
   closedAt?: string | null
+  requester?: {
+    id: number
+    fullName: string
+    email: string
+  }
+  assignedAgent?: {
+    id: number
+    fullName: string
+  } | null
+  assignedAgentId?: number | null
+  resolutionNotes?: string | null
 }
 
 export type TicketRecord = Omit<Ticket, 'category'>

@@ -1,0 +1,295 @@
+.admin-sidebar-note {
+  margin: 21px 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #777;
+  font-size: 10px;
+}
+
+.admin-sidebar-dot {
+  width: 5px;
+  height: 5px;
+  background: var(--accent);
+}
+
+.admin-page-content {
+  width: min(100%, 1500px);
+}
+
+.admin-refresh {
+  min-height: 42px;
+  padding: 0 15px;
+  font-size: 9px;
+}
+
+.admin-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.admin-signout {
+  padding: 6px 0;
+  border: 0;
+  border-bottom: 1px solid #444;
+  background: transparent;
+  color: #aaa;
+  font: inherit;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.admin-signout:hover {
+  border-color: var(--accent);
+  color: var(--foreground);
+}
+
+.priority-critical {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.admin-overview {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.admin-urgent .overview-number {
+  color: var(--accent);
+}
+
+.admin-queue {
+  margin-top: 54px;
+}
+
+.admin-search-field {
+  width: min(100%, 310px);
+}
+
+.admin-ticket-list {
+  overflow-x: auto;
+}
+
+.admin-ticket-header,
+.admin-ticket-row {
+  min-width: 930px;
+  display: grid;
+  grid-template-columns: minmax(190px, 2fr) minmax(135px, 1.35fr) minmax(90px, 0.9fr) minmax(70px, 0.65fr) minmax(100px, 0.9fr) minmax(105px, 0.9fr);
+  align-items: center;
+  gap: 14px;
+}
+
+.admin-ticket-header {
+  min-height: 47px;
+  color: #777;
+  font-family: var(--mono);
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+}
+
+.admin-ticket-row {
+  width: 100%;
+  min-height: 76px;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+
+.admin-ticket-row:hover {
+  background: #101010;
+}
+
+.admin-ticket-subject {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-ticket-subject > span:last-child,
+.admin-requester {
+  min-width: 0;
+}
+
+.admin-ticket-subject strong,
+.admin-requester,
+.admin-assignee {
+  display: block;
+  overflow: hidden;
+  color: #e8e8e8;
+  font-size: 11px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-ticket-subject small,
+.admin-requester small {
+  display: block;
+  margin-top: 5px;
+  overflow: hidden;
+  color: var(--muted-foreground);
+  font-size: 9px;
+  font-weight: 400;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-assignee {
+  color: #aaa;
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.admin-ticket-modal {
+  width: min(100%, 650px);
+}
+
+.admin-ticket-modal h2 {
+  overflow-wrap: anywhere;
+}
+
+.admin-requester-card {
+  margin-top: 25px;
+  padding: 14px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-requester-avatar {
+  width: 34px;
+  height: 34px;
+  border: 1px solid #393939;
+  display: grid;
+  place-items: center;
+  color: var(--foreground);
+  font-family: var(--mono);
+  font-size: 9px;
+}
+
+.admin-requester-card > span:nth-child(2) {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.admin-requester-card strong {
+  color: #e8e8e8;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.admin-requester-card small {
+  color: var(--muted-foreground);
+  font-size: 9px;
+}
+
+.admin-requester-card .status-label {
+  margin-left: auto;
+}
+
+.admin-ticket-description {
+  padding: 20px 0 4px;
+}
+
+.admin-ticket-description .sidebar-label {
+  margin: 0;
+}
+
+.admin-ticket-description p {
+  margin: 10px 0;
+  color: #d0d0d0;
+  font-size: 12px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+
+.admin-ticket-description small {
+  color: var(--muted-foreground);
+  font-size: 10px;
+}
+
+.admin-ticket-form {
+  margin-top: 18px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.admin-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.admin-closed-note {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+@media (max-width: 900px) {
+  .admin-overview {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-overview .overview-item:nth-child(3) {
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .admin-topbar-actions {
+    gap: 12px;
+  }
+
+  .admin-signout {
+    font-size: 9px;
+  }
+
+  .admin-overview {
+    min-height: 170px;
+    margin-top: 38px;
+  }
+
+  .admin-overview .overview-item {
+    padding-left: 14px;
+  }
+
+  .admin-overview .overview-item:nth-child(odd) {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .admin-queue {
+    margin-top: 42px;
+  }
+
+  .admin-queue .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-search-field {
+    width: 100%;
+  }
+
+  .admin-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-ticket-modal {
+    padding: 25px 20px;
+  }
+}

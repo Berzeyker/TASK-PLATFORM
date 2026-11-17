@@ -4,10 +4,11 @@ import {
   ApiError,
   clearSession,
   login,
-  readEmployeeSession,
+  readPortalSession,
   saveSession,
 } from './features/auth/api'
 import type { AuthSession } from './features/auth/types'
+import { AdminDashboard } from './features/admin/AdminDashboard'
 import { TicketSummary } from './features/dashboard/TicketSummary'
 import { createWorkerTicket, getWorkerPortal } from './features/tickets/api'
 import { TicketDetailModal } from './features/tickets/TicketDetailModal'
@@ -29,7 +30,7 @@ function getErrorMessage(error: unknown, fallback: string): string {
 }
 
 function App() {
-  const [session, setSession] = useState<AuthSession | null>(() => readEmployeeSession())
+  const [session, setSession] = useState<AuthSession | null>(() => readPortalSession())
   const [tickets, setTickets] = useState<Ticket[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null)
@@ -42,7 +43,7 @@ function App() {
   const [isLoggingIn, setIsLoggingIn] = useState(false)
 
   useEffect(() => {
-    if (!session) return
+    if (!session || session.role !== 'EMPLOYEE') return
 
     let cancelled = false
     void getWorkerPortal(session.accessToken)
@@ -84,8 +85,8 @@ function App() {
 
     try {
       const authenticatedSession = await login({ email, password })
-      if (authenticatedSession.role !== 'EMPLOYEE') {
-        setLoginError('Este portal es para trabajadores. Usa una cuenta de trabajador.')
+      if (authenticatedSession.role !== 'EMPLOYEE' && authenticatedSession.role !== 'ADMIN') {
+        setLoginError('Este portal está disponible para trabajadores y administradores.')
         return
       }
       setIsLoading(true)
@@ -186,6 +187,15 @@ function App() {
         error={loginError}
         isSubmitting={isLoggingIn}
         onSubmit={handleLogin}
+      />
+    )
+  }
+
+  if (session.role === 'ADMIN') {
+    return (
+      <AdminDashboard
+        session={session}
+        onSignOut={signOut}
       />
     )
   }

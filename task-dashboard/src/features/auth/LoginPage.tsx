@@ -14,7 +14,7 @@ export function LoginPage({ error, isSubmitting, onSubmit }: LoginPageProps) {
           <span className="brand-mark" aria-hidden="true">T</span>
           <span className="brand-name">T.A.S.K.</span>
         </a>
-        <span className="login-top-note">PORTAL DEL TRABAJADOR</span>
+        <span className="login-top-note">PORTAL T.A.S.K.</span>
       </div>
 
       <div className="login-layout">
@@ -29,7 +29,7 @@ export function LoginPage({ error, isSubmitting, onSubmit }: LoginPageProps) {
           <div>
             <p className="eyebrow">ACCESO SEGURO</p>
             <h2 id="login-title">Bienvenido<br />de vuelta.</h2>
-            <p className="login-instruction">Inicia sesión con tu cuenta de trabajador.</p>
+            <p className="login-instruction">Inicia sesión con tu cuenta autorizada.</p>
           </div>
 
           <form className="login-form" onSubmit={onSubmit}>
