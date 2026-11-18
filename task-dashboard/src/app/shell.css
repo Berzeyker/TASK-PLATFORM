@@ -1,0 +1,17 @@
+a.nav-link {
+  text-decoration: none;
+}
+
+.route-status {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  color: var(--muted-foreground);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+}
+
+.placeholder-page {
+  max-width: 560px;
+}

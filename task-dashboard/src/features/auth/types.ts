@@ -6,6 +6,15 @@ export type AuthSession = {
   role: UserRole
 }
 
+/** Profile returned by GET /auth/me. */
+export type AuthUser = {
+  id: number
+  email: string
+  fullName: string
+  role: UserRole
+  isActive: boolean
+}
+
 export type LoginResponse = {
   accessToken: string
   role: UserRole

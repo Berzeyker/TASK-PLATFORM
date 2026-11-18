@@ -55,3 +55,26 @@ export function updateAdminTicket(token: string, ticketId: string, update: Ticke
     body: update,
   })
 }
+
+export type NewUserInput = {
+  email: string
+  fullName: string
+  role: UserRole
+  password: string
+}
+
+export function getUsers(token: string): Promise<AdminUser[]> {
+  return apiRequest<AdminUser[]>('/admin/users', { token })
+}
+
+export function createUser(token: string, input: NewUserInput): Promise<Omit<AdminUser, 'isActive'>> {
+  return apiRequest('/admin/users', { token, method: 'POST', body: input })
+}
+
+export function getCategories(token: string): Promise<Category[]> {
+  return apiRequest<Category[]>('/categories', { token })
+}
+
+export function createCategory(token: string, name: string): Promise<Category> {
+  return apiRequest<Category>('/categories', { token, method: 'POST', body: { name } })
+}

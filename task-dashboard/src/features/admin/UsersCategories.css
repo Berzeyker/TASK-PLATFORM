@@ -1,0 +1,76 @@
+.inline-admin-form {
+  margin-top: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 20px;
+}
+
+.inline-admin-form label {
+  flex: 1 1 200px;
+}
+
+.inline-admin-form select,
+.inline-admin-form input {
+  width: 100%;
+}
+
+.admin-success {
+  margin: 12px 0 0;
+  color: #83b995;
+  font-size: 12px;
+}
+
+.admin-table {
+  margin-top: 28px;
+  overflow-x: auto;
+}
+
+.admin-table-row {
+  min-width: 640px;
+  padding: 14px 4px;
+  border-top: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 1.3fr 1.6fr 1fr 0.7fr;
+  gap: 16px;
+  align-items: center;
+  font-size: 12px;
+  color: #d0d0d0;
+}
+
+.admin-table-row strong {
+  color: var(--foreground);
+  font-weight: 500;
+}
+
+.admin-table-head {
+  border-top: 0;
+  color: var(--muted-foreground);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+
+.user-active {
+  color: #83b995;
+}
+
+.user-inactive {
+  color: var(--muted-foreground);
+}
+
+.category-chips {
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.category-chips li {
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  color: #d0d0d0;
+  font-size: 12px;
+}

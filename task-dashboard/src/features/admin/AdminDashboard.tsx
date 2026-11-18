@@ -1,15 +1,10 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
-import { ApiError, clearSession } from '../auth/api'
-import type { AuthSession } from '../auth/types'
+import { getErrorMessage } from '../auth/api'
+import { useAuth } from '../auth/auth-context'
 import { formatTicketDate, ticketPriorityLabels, ticketStatusLabels } from '../tickets/presentation'
 import type { Category, Ticket, TicketPriority, TicketStatus } from '../tickets/types'
 import { getAdminPortal, updateAdminTicket, type AdminUser } from './api'
 import './AdminDashboard.css'
-
-type AdminDashboardProps = {
-  session: AuthSession
-  onSignOut: () => void
-}
 
 type QueueFilter = 'ALL' | 'OPEN' | 'IN_PROGRESS' | 'RESOLVED' | 'CLOSED'
 
@@ -40,16 +35,9 @@ function isInFilter(ticket: Ticket, filter: QueueFilter): boolean {
   return ticket.status === 'CLOSED'
 }
 
-function getErrorMessage(error: unknown): string {
-  if (error instanceof ApiError) return error.message
-  if (error instanceof DOMException && error.name === 'TimeoutError') {
-    return 'La API tardó demasiado en responder. Verifica el backend y la base de datos.'
-  }
-  if (error instanceof TypeError) return 'No se pudo conectar con la API. Verifica que el backend esté funcionando.'
-  return error instanceof Error ? error.message : 'Ocurrió un error inesperado.'
-}
-
-export function AdminDashboard({ session, onSignOut }: AdminDashboardProps) {
+export function AdminDashboard() {
+  const { session } = useAuth()
+  const token = session?.accessToken ?? ''
   const [tickets, setTickets] = useState<Ticket[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [agents, setAgents] = useState<AdminUser[]>([])
@@ -64,18 +52,13 @@ export function AdminDashboard({ session, onSignOut }: AdminDashboardProps) {
   async function loadTickets(): Promise<boolean> {
     setIsLoading(true)
     try {
-      const portal = await getAdminPortal(session.accessToken)
+      const portal = await getAdminPortal(token)
       setTickets(portal.tickets)
       setCategories(portal.categories)
       setAgents(portal.agents)
       setError('')
       return true
     } catch (loadError) {
-      if (loadError instanceof ApiError && loadError.status === 401) {
-        clearSession()
-        onSignOut()
-        return false
-      }
       setError(getErrorMessage(loadError))
       return false
     } finally {
@@ -85,7 +68,7 @@ export function AdminDashboard({ session, onSignOut }: AdminDashboardProps) {
 
   useEffect(() => {
     let cancelled = false
-    void getAdminPortal(session.accessToken)
+    void getAdminPortal(token)
       .then((portal) => {
         if (cancelled) return
         setTickets(portal.tickets)
@@ -95,11 +78,6 @@ export function AdminDashboard({ session, onSignOut }: AdminDashboardProps) {
       })
       .catch((loadError: unknown) => {
         if (cancelled) return
-        if (loadError instanceof ApiError && loadError.status === 401) {
-          clearSession()
-          onSignOut()
-          return
-        }
         setError(getErrorMessage(loadError))
       })
       .finally(() => {
@@ -108,7 +86,7 @@ export function AdminDashboard({ session, onSignOut }: AdminDashboardProps) {
     return () => {
       cancelled = true
     }
-  }, [onSignOut, session.accessToken])
+  }, [token])
 
   const visibleTickets = useMemo(() => {
     const query = search.trim().toLocaleLowerCase('es')
@@ -129,13 +107,6 @@ export function AdminDashboard({ session, onSignOut }: AdminDashboardProps) {
   const openCount = tickets.filter((ticket) => ticket.status === 'OPEN' || ticket.status === 'REOPENED').length
   const activeCount = tickets.filter((ticket) => ticket.status === 'ASSIGNED' || ticket.status === 'IN_PROGRESS').length
   const urgentCount = tickets.filter((ticket) => ticket.priority === 'CRITICAL' || ticket.priority === 'HIGH').length
-  const displayName = session.email.split('@')[0].replace(/[._-]+/g, ' ')
-  const initials = displayName.split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase()
-
-  function signOut() {
-    clearSession()
-    onSignOut()
-  }
 
   async function handleUpdate(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -177,66 +148,21 @@ export function AdminDashboard({ session, onSignOut }: AdminDashboardProps) {
 
     setIsSaving(true)
     try {
-      await updateAdminTicket(session.accessToken, selectedTicket.id, update)
+      await updateAdminTicket(token, selectedTicket.id, update)
       if (await loadTickets()) {
         setSelectedTicket(null)
       } else {
         setFormError('Los cambios se guardaron, pero no se pudo actualizar la cola. Intenta actualizarla.')
       }
     } catch (saveError) {
-      if (saveError instanceof ApiError && saveError.status === 401) {
-        clearSession()
-        onSignOut()
-      } else {
-        setFormError(getErrorMessage(saveError))
-      }
+      setFormError(getErrorMessage(saveError))
     } finally {
       setIsSaving(false)
     }
   }
 
   return (
-    <div className="workspace admin-workspace">
-      <aside className="sidebar" aria-label="Navegación principal">
-        <a className="brand" href="/" aria-label="TASK, inicio">
-          <span className="brand-mark" aria-hidden="true">T</span>
-          <span className="brand-name">T.A.S.K.</span>
-        </a>
-        <div className="sidebar-section">
-          <span className="sidebar-label">GESTIÓN DE SOPORTE</span>
-          <button className="nav-link nav-link-active" type="button" aria-current="page">
-            <span className="nav-indicator" aria-hidden="true" />
-            Cola de tickets
-            <span className="nav-count">{tickets.length}</span>
-          </button>
-          <div className="admin-sidebar-note">
-            <span className="admin-sidebar-dot" aria-hidden="true" />
-            Panel de administración
-          </div>
-        </div>
-        <div className="sidebar-bottom">
-          <span className="sidebar-label">CENTRO DE OPERACIONES</span>
-          <p>Asigna y da seguimiento a las solicitudes de tu equipo.</p>
-          <div className="profile">
-            <span className="avatar" aria-hidden="true">{initials || 'AD'}</span>
-            <span className="profile-copy">
-              <strong>{displayName}</strong>
-              <span>Administrador</span>
-            </span>
-            <button className="profile-menu" type="button" onClick={signOut} aria-label="Cerrar sesión">Salir</button>
-          </div>
-        </div>
-      </aside>
-
-      <main className="main-content">
-        <header className="topbar">
-          <span className="breadcrumb">ADMINISTRACIÓN <span>/</span> COLA DE TICKETS</span>
-          <div className="admin-topbar-actions">
-            <span className="service-status"><span /> Sistema operativo</span>
-            <button className="admin-signout" type="button" onClick={signOut}>Cerrar sesión</button>
-          </div>
-        </header>
-
+    <>
         <section className="page-content admin-page-content">
           <div className="page-heading">
             <div>
@@ -354,11 +280,6 @@ export function AdminDashboard({ session, onSignOut }: AdminDashboardProps) {
             <p className="list-footnote">Mostrando {isLoading ? '…' : visibleTickets.length} de {tickets.length} tickets</p>
           </section>
         </section>
-        <footer className="page-footer">
-          <span>T.A.S.K. <span className="footer-separator">/</span> ADMINISTRACIÓN DE SOPORTE</span>
-          <span>{agents.length} agentes activos</span>
-        </footer>
-      </main>
 
       {selectedTicket && (
         <AdminTicketModal
@@ -373,7 +294,7 @@ export function AdminDashboard({ session, onSignOut }: AdminDashboardProps) {
           onSubmit={handleUpdate}
         />
       )}
-    </div>
+    </>
   )
 }
 
