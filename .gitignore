@@ -1,3 +1,10 @@
 node_modules
 dist
 .env
+
+# AI Microservice (Python / ChromaDB)
+ai-service/venv/
+ai-service/__pycache__/
+ai-service/*.pyc
+ai-service/.env
+ai-service/chroma_db/
