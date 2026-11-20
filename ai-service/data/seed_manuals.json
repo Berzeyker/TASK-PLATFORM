@@ -1,0 +1,38 @@
+[
+    {
+        "article_id": "KB-001",
+        "title": "Solución de errores de conexión en VPN Corporativa",
+        "category": "Redes",
+        "content": "Si el cliente VPN muestra el error 'Connection Timed Out' o 'Authentication Failed', siga estos pasos: 1. Verifique que su conexión local a internet funcione abriendo un navegador. 2. Cierre completamente el cliente VPN desde la bandeja del sistema. 3. Confirme que su contraseña institucional no haya expirado en los últimos 90 días. 4. Si usa red Wi-Fi doméstica, reinicie su router o pruebe compartiendo datos móviles para descartar bloqueo de puertos UDP 1194 y 443 por parte de su proveedor de internet. 5. Si el error persiste con código 809, ejecute el solucionador de red de Windows y vuelva a intentar."
+    },
+    {
+        "article_id": "KB-002",
+        "title": "Restablecimiento de contraseña institucional y autenticación MFA",
+        "category": "Cuentas y Accesos",
+        "content": "Para restablecer una contraseña olvidada o bloqueada: 1. Ingrese al portal de autoservicio de identidad institucional desde cualquier dispositivo. 2. Seleccione '¿Olvidó su contraseña?' e introduzca su usuario corporativo. 3. Apruebe la notificación push en la aplicación Microsoft Authenticator en su teléfono móvil. 4. Cree una nueva contraseña de al menos 12 caracteres que incluya mayúsculas, minúsculas, números y un símbolo especial, sin repetir las últimas 5 contraseñas utilizadas. 5. Si cambió de teléfono móvil y perdió acceso a Authenticator, debe abrir un ticket con soporte técnico para reiniciar su token MFA."
+    },
+    {
+        "article_id": "KB-003",
+        "title": "Configuración y solución de atascos en impresoras de red",
+        "category": "Hardware e Impresión",
+        "content": "Cuando los documentos se quedan en cola de impresión sin salir: 1. Verifique en la pantalla física de la impresora que tenga papel en la bandeja correcta y no muestre alertas de tóner agotado o atasco. 2. En su computadora Windows, presione Win + R, escriba 'services.msc' y presione Enter. 3. Busque el servicio 'Cola de impresión' (Print Spooler), haga clic derecho y seleccione 'Reiniciar'. 4. Si la impresora aparece como 'Sin conexión', elimine el dispositivo en Configuración > Bluetooth y dispositivos > Impresoras y escáneres, y vuelva a agregarla buscando por el nombre de red del piso."
+    },
+    {
+        "article_id": "KB-004",
+        "title": "Solución a lentitud y problemas de sincronización en Outlook",
+        "category": "Software y Correo",
+        "content": "Si Microsoft Outlook tarda en recibir correos o se queda congelado en 'Actualizando carpeta': 1. Verifique en la barra inferior derecha que no esté activado el modo 'Trabajar sin conexión' (Work Offline). 2. Cierre Outlook completamente. 3. Presione Win + R, escriba 'outlook.exe /safe' y presione Enter para abrirlo en modo seguro y descartar complementos dañados. 4. Si el archivo OST supera los 45 GB, archive correos antiguos de hace más de 2 años en un archivo local PST o reduzca el deslizador de caché de correo a 12 meses en Configuración de la cuenta."
+    },
+    {
+        "article_id": "KB-005",
+        "title": "Solicitud de instalación de software autorizado",
+        "category": "Software y Licencias",
+        "content": "Por políticas de seguridad informática, los usuarios estándar no poseen permisos de administrador local para instalar archivos .exe o .msi. 1. Antes de solicitar un programa, revise el catálogo de aplicaciones aprobadas en el 'Centro de Software' de su equipo. 2. Si el software requerido no aparece en el catálogo (por ejemplo, herramientas de desarrollo, diseño CAD o editores especializados), cree un ticket en la categoría Software indicando el nombre exacto del programa, versión, justificación de negocio y aprobación de su jefe directo."
+    },
+    {
+        "article_id": "KB-006",
+        "title": "Falla de internet, problemas de DNS y pérdida intermitente de Wi-Fi",
+        "category": "Redes",
+        "content": "Si presenta falla de internet en sala, su equipo muestra 'Conectado, sin acceso a internet' o no cargan las páginas internas: 1. Desactive y vuelva a activar el adaptador Wi-Fi desde la barra de tareas. 2. Abra una consola de comandos (CMD) y ejecute el comando 'ipconfig /flushdns' para limpiar la caché de resolución de nombres. 3. Ejecute 'ipconfig /release' seguido de 'ipconfig /renew' para solicitar una nueva dirección en la red local. 4. Si el problema ocurre únicamente en una sala de juntas específica, reporte la ubicación exacta para revisar el punto de acceso inalámbrico."
+    }
+]

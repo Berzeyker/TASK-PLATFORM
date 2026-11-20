@@ -35,12 +35,12 @@ def get_indexed_count() -> int:
 def index_article(payload: IngestArticleRequest) -> IngestArticleResponse:
     """
     Sanitiza, fragmenta, vectoriza e indexa un artículo aprobado de la Knowledge Base.
-    Si el artículo ya existía, reemplaza sus fragmentos anteriores.
+    Incluye un vector dedicado de título + síntomas iniciales para empatar consultas cortas.
     """
     clean_title = sanitize_text(payload.title)
     clean_content = sanitize_text(payload.content)
 
-    # Eliminar fragmentos previos del mismo artículo para evitar duplicados al editar
+    # Eliminar fragmentos previos del mismo artículo para evitar duplicados
     existing = collection.get(where={"article_id": payload.article_id})
     if existing and existing["ids"]:
         collection.delete(ids=existing["ids"])
@@ -54,8 +54,25 @@ def index_article(payload: IngestArticleRequest) -> IngestArticleResponse:
     documents = []
     metadatas = []
 
+    # Vector 0: Encabezado de síntomas (título + primera oración antes de los pasos)
+    symptom_intro = clean_content.split(":")[0].split(".")[0].strip()
+    symptom_text = f"{clean_title}. {symptom_intro}"
+    ids.append(f"{payload.article_id}_symptom")
+    embeddings.append(embedder.encode(symptom_text).tolist())
+    documents.append(symptom_text)
+    metadatas.append(
+        {
+            "article_id": payload.article_id,
+            "title": clean_title,
+            "category": payload.category,
+            "chunk_index": -1,
+            "full_content": clean_content,
+        }
+    )
+
+    # Vectores de contenido fragmentado
     for idx, chunk in enumerate(chunks):
-        enriched_text = f"Title: {clean_title} | Category: {payload.category}\n{chunk}"
+        enriched_text = f"{clean_title}. {chunk}"
         vector = embedder.encode(enriched_text).tolist()
 
         ids.append(f"{payload.article_id}_chunk_{idx}")
@@ -67,6 +84,7 @@ def index_article(payload: IngestArticleRequest) -> IngestArticleResponse:
                 "title": clean_title,
                 "category": payload.category,
                 "chunk_index": idx,
+                "full_content": clean_content,
             }
         )
 
@@ -82,7 +100,6 @@ def index_article(payload: IngestArticleRequest) -> IngestArticleResponse:
         article_id=payload.article_id,
         chunks_indexed=len(ids),
     )
-
 
 def delete_article(article_id: str) -> int:
     existing = collection.get(where={"article_id": article_id})
@@ -142,6 +159,7 @@ def troubleshoot_problem(payload: TroubleshootRequest) -> TroubleshootResponse:
 
     raw_query = f"{payload.title}. {payload.description}"
     clean_query = sanitize_text(raw_query)
+    print(f"[BR-05 SANITIZER] Consulta enviada al motor: {clean_query}")
     query_vector = embedder.encode(clean_query).tolist()
 
     n_results = min(payload.top_k, collection.count())
@@ -177,7 +195,7 @@ def troubleshoot_problem(payload: TroubleshootRequest) -> TroubleshootResponse:
             escalation_reason=f"Similitud semántica ({best_score}) inferior al umbral permitido ({settings.similarity_threshold}).",
         )
 
-    # Construir contexto y deduplicar citas por article_id
+    # Construir contexto completo y deduplicar citas por article_id
     context_blocks = []
     unique_sources: dict[str, SourceCitation] = {}
 
@@ -187,16 +205,18 @@ def troubleshoot_problem(payload: TroubleshootRequest) -> TroubleshootResponse:
             art_id = str(metas[i]["article_id"])
             title = str(metas[i]["title"])
             category = str(metas[i]["category"])
+            full_text = str(metas[i].get("full_content", doc))
 
-            context_blocks.append(f"[Source Title: {title}]\n{doc}")
-
-            if art_id not in unique_sources or score > unique_sources[art_id].similarity_score:
+            if art_id not in unique_sources:
+                context_blocks.append(f"[Source Title: {title}]\n{full_text}")
                 unique_sources[art_id] = SourceCitation(
                     article_id=art_id,
                     title=title,
                     category=category,
                     similarity_score=score,
                 )
+            elif score > unique_sources[art_id].similarity_score:
+                unique_sources[art_id].similarity_score = score
 
     context_str = "\n\n---\n\n".join(context_blocks)
 

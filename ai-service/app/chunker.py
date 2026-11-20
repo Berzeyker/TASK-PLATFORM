@@ -1,10 +1,10 @@
 from typing import List
 
 
-def chunk_text(text: str, chunk_size: int = 120, overlap: int = 25) -> List[str]:
+def chunk_text(text: str, chunk_size: int = 22, overlap: int = 5) -> List[str]:
     """
-    Divide un documento técnico en fragmentos basados en palabras con solapamiento
-    para preservar el contexto semántico entre párrafos.
+    Divide el documento en fragmentos cortos para que el primer bloque aísle
+    los síntomas del problema y maximice la similitud semántica.
     """
     cleaned = " ".join(text.split())
     if not cleaned:
