@@ -1,0 +1,10 @@
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+.env.*
+chroma_db/
+.git/
+.pytest_cache/
