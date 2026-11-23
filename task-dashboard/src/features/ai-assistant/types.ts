@@ -41,3 +41,11 @@ export interface AiServiceHealth {
     llm_provider: string;
     indexed_chunks: number;
 }
+
+export interface AssistantChatMessage {
+    id: string;
+    role: 'user' | 'assistant';
+    text: string;
+    /** Presente solo en respuestas del motor RAG. */
+    result?: TroubleshootResponse;
+}

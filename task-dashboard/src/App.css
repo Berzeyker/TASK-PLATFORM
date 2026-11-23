@@ -250,6 +250,12 @@
   gap: 32px;
 }
 
+.page-heading-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 .eyebrow {
   margin: 0 0 20px;
   color: var(--muted-foreground);
@@ -1285,6 +1291,14 @@
 
   .primary-action {
     min-height: 46px;
+  }
+
+  .page-heading-actions {
+    width: 100%;
+  }
+
+  .page-heading-actions > button {
+    flex: 1 1 auto;
   }
 
   .overview-strip {

@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router'
 import { getErrorMessage } from '../auth/api'
 import { useAuth } from '../auth/auth-context'
 import { TicketSummary } from '../dashboard/TicketSummary'
@@ -11,6 +12,7 @@ import type { Category, CreateTicketInput, Ticket } from './types'
 
 export function EmployeePortal() {
   const { session } = useAuth()
+  const navigate = useNavigate()
   const token = session?.accessToken ?? ''
   const [tickets, setTickets] = useState<Ticket[]>([])
   const [categories, setCategories] = useState<Category[]>([])
@@ -95,12 +97,17 @@ export function EmployeePortal() {
             <h1>Tu trabajo,<br /><span>sin interrupciones.</span></h1>
             <p className="intro-copy">Reporta un problema y sigue cada actualización desde un solo lugar.</p>
           </div>
-          <button className="primary-action" type="button" onClick={() => {
-            setFormError('')
-            setIsFormOpen(true)
-          }}>
-            <span aria-hidden="true">+</span> Crear ticket
-          </button>
+          <div className="page-heading-actions">
+            <button className="secondary-action" type="button" onClick={() => navigate('/assistant')}>
+              Preguntar a la IA
+            </button>
+            <button className="primary-action" type="button" onClick={() => {
+              setFormError('')
+              setIsFormOpen(true)
+            }}>
+              <span aria-hidden="true">+</span> Crear ticket
+            </button>
+          </div>
         </div>
 
         {pageError && (
