@@ -1,6 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express';
 import multer from 'multer';
 import { ZodError } from 'zod';
+import { Prisma } from '@prisma/client';
 
 export class HttpError extends Error {
   constructor(public status: number, message: string) { super(message); }
@@ -14,6 +15,11 @@ export const asyncGuard = (fn: (req: Request, res: Response) => Promise<void>): 
 
 export function errorHandler(err: unknown, _req: Request, res: Response, _next: NextFunction) {
   if (err instanceof ZodError) return res.status(400).json({ error: 'Validation failed', issues: err.issues });
+  // unique-constraint race (two requests creating the same email/category) and serializable-transaction conflicts
+  if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2002')
+    return res.status(409).json({ error: 'That record already exists.' });
+  if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2034')
+    return res.status(409).json({ error: 'Conflicting update. Please try again.' });
   if (err instanceof HttpError) return res.status(err.status).json({ error: err.message });
   if (err instanceof multer.MulterError)
     return res.status(400).json({ error: 'Invalid file format or file size exceeds 10MB limit.' });
