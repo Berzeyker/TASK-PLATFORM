@@ -79,7 +79,7 @@ export function TicketDetailModal({ ticket, token, onClose, onRate }: TicketDeta
           <span className={`status-label status-${ticket.status.toLowerCase()}`}>
             <span />{ticketStatusLabels[ticket.status]}
           </span>
-          <span>{ticket.category}</span>
+          <span>{typeof ticket.category === 'string' ? ticket.category : ticket.category?.name ?? 'Sin categoría'}</span>
           <span>Prioridad {ticketPriorityLabels[ticket.priority].toLowerCase()}</span>
           {ticket.assignedAgent && <span>Agente: {ticket.assignedAgent.fullName}</span>}
         </div>

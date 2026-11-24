@@ -96,7 +96,7 @@ export function TicketList({ tickets, isLoading, onSelect }: TicketListProps) {
                 </div>
               </div>
               <span className="ticket-category">
-                {ticket.category}
+                {typeof ticket.category === 'string' ? ticket.category : (ticket.category as { name?: string })?.name ?? 'Sin categoría'}
                 {(ticket.affectedDevice || ticket.location) && (
                   <span className="ticket-device">
                     {[ticket.affectedDevice, ticket.location].filter(Boolean).join(' · ')}

@@ -30,12 +30,14 @@ export type AuditLog = {
   createdAt: string
 }
 
+export type TicketCategory = string | { id: number; name: string }
+
 export type Ticket = {
   id: string
   title: string
   description: string
   categoryId: number | null
-  category: string
+  category: TicketCategory
   affectedDevice?: string | null
   location?: string | null
   status: TicketStatus
