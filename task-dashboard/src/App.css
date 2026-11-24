@@ -820,10 +820,125 @@
   font-size: 10px;
 }
 
-.detail-update strong {
-  margin-left: 4px;
+.detail-resolution,
+.detail-attachments,
+.detail-timeline,
+.detail-rating {
+  margin-top: 26px;
+}
+
+.detail-resolution .sidebar-label,
+.detail-attachments .sidebar-label,
+.detail-timeline .sidebar-label,
+.detail-rating .sidebar-label {
+  margin-left: 0;
+  margin-bottom: 10px;
+}
+
+.detail-resolution p {
+  color: #d0d0d0;
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.attachment-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.attachment-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.attachment-name {
+  flex: 1;
+  font-size: 12px;
   color: var(--foreground);
-  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.attachment-size {
+  font-size: 10px;
+  color: var(--muted-foreground);
+}
+
+.audit-timeline {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-left: 1px solid var(--border);
+  padding-left: 16px;
+}
+
+.audit-item {
+  position: relative;
+  font-size: 12px;
+}
+
+.audit-dot {
+  position: absolute;
+  left: -21px;
+  top: 4px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--primary);
+}
+
+.audit-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.audit-date {
+  font-size: 10px;
+  color: var(--muted-foreground);
+}
+
+.rating-stars {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.rating-star {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: #555;
+  font-size: 22px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.rating-star-active {
+  color: #f5a623;
+  border-color: #f5a623;
+}
+
+.rating-hint {
+  margin-top: 8px;
+  font-size: 10px;
+  color: var(--muted-foreground);
+}
+
+.form-hint {
+  font-size: 10px;
+  color: var(--muted-foreground);
 }
 
 .modal-close {

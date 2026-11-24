@@ -55,6 +55,16 @@ export function TicketFormModal({
             <span>UBICACIÓN <small>OPCIONAL</small></span>
             <input name="location" type="text" placeholder="Ej. Piso 2, oficina norte" />
           </label>
+          <label>
+            <span>ARCHIVOS ADJUNTOS <small>OPCIONAL · MÁX. 5 · 10 MB C/U</small></span>
+            <input
+              name="files"
+              type="file"
+              multiple
+              accept=".pdf,.png,.jpg,.jpeg,.txt,application/pdf,image/png,image/jpeg,text/plain"
+            />
+            <small className="form-hint">Formatos permitidos: PDF, PNG, JPG, TXT.</small>
+          </label>
           <div className="form-actions">
             <button className="secondary-action" type="button" onClick={onClose} disabled={isSubmitting}>Cancelar</button>
             <button className="primary-action" type="submit" disabled={isSubmitting}>
@@ -62,7 +72,10 @@ export function TicketFormModal({
             </button>
           </div>
           {error && <p className="form-error" role="alert">{error}</p>}
-          <p className="form-note">Al enviar, tu solicitud aparecerá en “Mis solicitudes”.</p>
+          <p className="form-note">
+            Al enviar, tu solicitud aparecerá en "Mis solicitudes". Los datos personales
+            se tratan conforme al aviso de privacidad de la institución (LFPDPPP).
+          </p>
         </form>
       </section>
     </div>
