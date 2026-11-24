@@ -10,12 +10,13 @@ type NavItem = { to: string; label: string; end?: boolean; also?: string[] }
 
 const navByRole: Record<UserRole, NavItem[]> = {
   EMPLOYEE: [{ to: '/portal', label: 'Mis tickets' }, { to: '/assistant', label: 'Asistente IA' }],
-  AGENT: [{ to: '/queue', label: 'Cola de tickets', also: ['/tickets/'] }, { to: '/assistant', label: 'Asistente IA' }],
-  MANAGER: [{ to: '/dashboard', label: 'Métricas' }, { to: '/assistant', label: 'Asistente IA' }],
+  AGENT: [{ to: '/queue', label: 'Cola de tickets', also: ['/tickets/'] }, { to: '/kb', label: 'Base de conocimiento' }, { to: '/assistant', label: 'Asistente IA' }],
+  MANAGER: [{ to: '/dashboard', label: 'Métricas' }, { to: '/kb', label: 'Base de conocimiento' }, { to: '/assistant', label: 'Asistente IA' }],
   ADMIN: [
     { to: '/admin', label: 'Cola de tickets', end: true },
     { to: '/dashboard', label: 'Métricas' },
     { to: '/admin/users', label: 'Usuarios y categorías' },
+    { to: '/kb', label: 'Base de conocimiento' },
     { to: '/assistant', label: 'Asistente IA' },
   ],
 }

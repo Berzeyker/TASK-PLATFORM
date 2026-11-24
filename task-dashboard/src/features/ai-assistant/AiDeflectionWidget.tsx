@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { getErrorMessage } from '../auth/api'
 import { askAssistant } from '../ai-assistant/api'
 import type { TroubleshootResponse } from '../ai-assistant/types'
 
@@ -25,6 +24,7 @@ export function AiDeflectionWidget({ title, description, token, onResolved, onNo
     const t = title.trim()
     const d = description.trim()
     if (t.length < MIN_LENGTH || d.length < MIN_LENGTH) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setResult(null)
       setError('')
       return
@@ -58,6 +58,7 @@ export function AiDeflectionWidget({ title, description, token, onResolved, onNo
 
   // Reset feedback when inputs change
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setFeedbackSent(false)
   }, [title, description])
 

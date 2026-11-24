@@ -5,6 +5,7 @@ import { AssistantPage } from '../features/ai-assistant/AssistantPage'
 import { LoginRoute } from '../features/auth/LoginRoute'
 import { allRoles } from '../features/auth/roles'
 import { ManagerDashboard } from '../features/dashboard/ManagerDashboard'
+import { KnowledgeBasePage } from '../features/knowledge-base/KnowledgeBasePage'
 import { QueuePage } from '../features/queue/QueuePage'
 import { TicketDetailPage } from '../features/queue/TicketDetailPage'
 import { EmployeePortal } from '../features/tickets/EmployeePortal'
@@ -34,6 +35,7 @@ export const router = createBrowserRouter([
                   { path: '/tickets/:id', element: <TicketDetailPage /> },
                 ],
               },
+              { element: <RequireRole roles={['AGENT', 'MANAGER', 'ADMIN']} />, children: [{ path: '/kb', element: <KnowledgeBasePage /> }] },
               { element: <RequireRole roles={['MANAGER', 'ADMIN']} />, children: [{ path: '/dashboard', element: <ManagerDashboard /> }] },
               {
                 element: <RequireRole roles={['ADMIN']} />,
