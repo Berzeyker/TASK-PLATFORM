@@ -1,0 +1,401 @@
+/* ---------- queue ---------- */
+.queue-filters {
+  margin-top: 28px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 24px;
+}
+
+.queue-filters label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.queue-filters label > span,
+.actions-panel label > span {
+  color: var(--muted-foreground);
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+}
+
+.queue-filters select,
+.actions-panel select,
+.actions-panel textarea {
+  min-height: 42px;
+  min-width: 170px;
+  padding: 0 11px;
+  border: 0;
+  border-bottom: 1px solid #464646;
+  background: var(--input);
+  color: var(--foreground);
+  color-scheme: dark;
+  font: inherit;
+  font-size: 13px;
+}
+
+.actions-panel textarea {
+  padding: 10px 11px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.queue-filters select:focus-visible,
+.actions-panel select:focus-visible,
+.actions-panel textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.queue-table-wrap {
+  margin-top: 24px;
+  overflow-x: auto;
+}
+
+.queue-table {
+  width: 100%;
+  min-width: 980px;
+  border-collapse: collapse;
+  font-size: 12px;
+  transition: opacity 0.15s;
+}
+
+.queue-stale {
+  opacity: 0.55;
+}
+
+.queue-table th {
+  padding: 0 12px 12px;
+  text-align: left;
+  color: var(--muted-foreground);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.queue-table td {
+  padding: 15px 12px;
+  border-top: 1px solid var(--border);
+  color: #d0d0d0;
+  vertical-align: middle;
+}
+
+.queue-row {
+  cursor: pointer;
+}
+
+.queue-row:hover td {
+  background: #121212;
+}
+
+.queue-id {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+}
+
+.queue-title a {
+  color: var(--foreground);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.queue-title a:hover,
+.queue-title a:focus-visible {
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-underline-offset: 4px;
+}
+
+.queue-date {
+  white-space: nowrap;
+  color: var(--muted-foreground);
+}
+
+.muted {
+  color: var(--muted-foreground);
+}
+
+.status-assigned > span {
+  background: #8ab4f8;
+}
+
+.status-reopened > span {
+  background: #e0a458;
+}
+
+.status-closed > span {
+  background: #555;
+}
+
+.priority-low {
+  color: var(--muted-foreground);
+}
+
+.queue-pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  color: var(--muted-foreground);
+  font-family: var(--mono);
+  font-size: 11px;
+}
+
+.queue-pagination > div {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.queue-pagination .secondary-action {
+  height: 38px;
+  padding: 0 14px;
+}
+
+/* ---------- ticket detail ---------- */
+.ticket-topline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.back-link {
+  color: var(--muted-foreground);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.back-link:hover,
+.back-link:focus-visible {
+  color: var(--foreground);
+}
+
+.ticket-header {
+  margin-top: 28px;
+}
+
+.ticket-title {
+  margin: 12px 0 0;
+  max-width: 820px;
+  font-size: clamp(26px, 4vw, 40px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  overflow-wrap: anywhere;
+}
+
+.ticket-header .detail-meta {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  font-size: 12px;
+  color: #d0d0d0;
+}
+
+.ticket-columns {
+  margin-top: 36px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 40px;
+  align-items: start;
+}
+
+.ticket-block {
+  padding: 22px 0;
+  border-top: 1px solid var(--border);
+}
+
+.ticket-block .sidebar-label {
+  display: block;
+  margin: 0 0 14px;
+  font-weight: 400;
+}
+
+.ticket-block .sidebar-label span {
+  margin-left: 6px;
+  color: var(--accent);
+}
+
+.ticket-text {
+  margin: 0 0 10px;
+  color: #e0e0e0;
+  font-size: 14px;
+  line-height: 1.65;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.ticket-block .muted {
+  margin: 0;
+  font-size: 12px;
+}
+
+.attachment-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.attachment-list li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  background: var(--card);
+}
+
+.attachment-name {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 13px;
+}
+
+.attachment-list small {
+  color: var(--muted-foreground);
+  font-family: var(--mono);
+  font-size: 10px;
+}
+
+.attachment-list .text-action {
+  margin: 0;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.timeline {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 18px;
+}
+
+.timeline li {
+  display: grid;
+  grid-template-columns: 12px 1fr;
+  gap: 14px;
+}
+
+.timeline-dot {
+  width: 7px;
+  height: 7px;
+  margin-top: 6px;
+  background: var(--accent);
+}
+
+.timeline-line {
+  margin: 0 0 3px;
+  font-size: 13px;
+  color: #e0e0e0;
+}
+
+.timeline small {
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+
+/* ---------- actions panel ---------- */
+.ticket-side {
+  position: sticky;
+  top: 24px;
+}
+
+.actions-panel {
+  display: grid;
+  gap: 18px;
+}
+
+.action-block {
+  padding: 20px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  display: grid;
+  gap: 14px;
+}
+
+.action-block h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.action-block label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.action-block select,
+.action-block textarea {
+  width: 100%;
+  min-width: 0;
+}
+
+.action-block .primary-action,
+.action-block .secondary-action {
+  width: 100%;
+  justify-content: center;
+}
+
+.action-note,
+.action-hint {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #bdbdbd;
+}
+
+.action-hint {
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+
+.char-counter {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: #e0a458;
+}
+
+.char-counter.char-ok {
+  color: #83b995;
+}
+
+.confirm-box {
+  padding: 14px;
+  border: 1px solid var(--accent);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.confirm-box p {
+  margin: 0 0 12px;
+}
+
+.confirm-actions {
+  display: grid;
+  gap: 10px;
+}
+
+@media (max-width: 980px) {
+  .ticket-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .ticket-side {
+    position: static;
+  }
+}

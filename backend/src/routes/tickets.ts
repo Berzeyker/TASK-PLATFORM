@@ -68,8 +68,19 @@ ticketsRouter.get('/:id', asyncHandler(async (req, res) => {
     include: { ...withPeople, attachments: true, auditLogs: { orderBy: { createdAt: 'asc' } } },
   });
   if (!t) throw new HttpError(404, 'Ticket not found');
-  if (!isStaff(req.user!.role) && t.requesterId !== req.user!.id) throw new HttpError(403, 'Access denied.');
-  res.json(t);
+  const staff = isStaff(req.user!.role);
+  if (!staff && t.requesterId !== req.user!.id) throw new HttpError(403, 'Access denied.');
+
+  // Timeline: AuditLog only stores actorId, so resolve who acted. Staff see names; employees only see a role.
+  const actorIds = [...new Set(t.auditLogs.map((l) => l.actorId).filter((id): id is number => id !== null))];
+  const actors = actorIds.length
+    ? await prisma.user.findMany({ where: { id: { in: actorIds } }, select: { id: true, fullName: true, role: true } })
+    : [];
+  const auditLogs = t.auditLogs.map((l) => {
+    const a = actors.find((u) => u.id === l.actorId);
+    return { ...l, actor: a ? (staff ? a : { role: a.role }) : null };
+  });
+  res.json({ ...t, auditLogs });
 }));
 
 // FR-04..FR-08: classify, prioritize, assign, investigate, resolve, close

@@ -71,10 +71,33 @@ export function createUser(token: string, input: NewUserInput): Promise<Omit<Adm
   return apiRequest('/admin/users', { token, method: 'POST', body: input })
 }
 
-export function getCategories(token: string): Promise<Category[]> {
-  return apiRequest<Category[]>('/categories', { token })
+export type AdminCategory = Category & { isActive: boolean }
+
+export type UserUpdateInput = {
+  fullName?: string
+  role?: UserRole
+  isActive?: boolean
+  /** Sets a new password (min 10) and clears any login lockout. */
+  password?: string
 }
 
-export function createCategory(token: string, name: string): Promise<Category> {
-  return apiRequest<Category>('/categories', { token, method: 'POST', body: { name } })
+export function updateUser(token: string, id: number, input: UserUpdateInput): Promise<AdminUser> {
+  return apiRequest<AdminUser>(`/admin/users/${id}`, { token, method: 'PUT', body: input })
+}
+
+/** Admins also get deactivated categories so they can be reactivated. */
+export function getCategories(token: string): Promise<AdminCategory[]> {
+  return apiRequest<AdminCategory[]>('/categories?includeInactive=true', { token })
+}
+
+export function createCategory(token: string, name: string): Promise<AdminCategory> {
+  return apiRequest<AdminCategory>('/categories', { token, method: 'POST', body: { name } })
+}
+
+export function updateCategory(
+  token: string,
+  id: number,
+  input: { name?: string; isActive?: boolean },
+): Promise<AdminCategory> {
+  return apiRequest<AdminCategory>(`/categories/${id}`, { token, method: 'PUT', body: input })
 }

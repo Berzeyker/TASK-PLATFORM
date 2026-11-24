@@ -1,11 +1,11 @@
 import { createBrowserRouter } from 'react-router'
 import { AdminDashboard } from '../features/admin/AdminDashboard'
 import { UsersCategoriesPage } from '../features/admin/UsersCategoriesPage'
-import { AssistantPage } from '../features/ai-assistant/AssistantPage'
 import { LoginRoute } from '../features/auth/LoginRoute'
 import { allRoles } from '../features/auth/roles'
 import { ManagerDashboard } from '../features/dashboard/ManagerDashboard'
-import { AgentQueuePlaceholder } from '../features/tickets/AgentQueuePlaceholder'
+import { QueuePage } from '../features/queue/QueuePage'
+import { TicketDetailPage } from '../features/queue/TicketDetailPage'
 import { EmployeePortal } from '../features/tickets/EmployeePortal'
 import { AppShell } from './AppShell'
 import { AppProvider } from './provider'
@@ -23,9 +23,15 @@ export const router = createBrowserRouter([
           {
             element: <AppShell />,
             children: [
-              { path: '/assistant', element: <AssistantPage /> },
               { element: <RequireRole roles={['EMPLOYEE']} />, children: [{ path: '/portal', element: <EmployeePortal /> }] },
-              { element: <RequireRole roles={['AGENT']} />, children: [{ path: '/queue', element: <AgentQueuePlaceholder /> }] },
+              {
+                // PUT /tickets/:id is allowed for agents and admins only
+                element: <RequireRole roles={['AGENT', 'ADMIN']} />,
+                children: [
+                  { path: '/queue', element: <QueuePage /> },
+                  { path: '/tickets/:id', element: <TicketDetailPage /> },
+                ],
+              },
               { element: <RequireRole roles={['MANAGER', 'ADMIN']} />, children: [{ path: '/dashboard', element: <ManagerDashboard /> }] },
               {
                 element: <RequireRole roles={['ADMIN']} />,

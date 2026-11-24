@@ -4,26 +4,17 @@ import { roleLabels } from '../features/auth/roles'
 import type { UserRole } from '../features/auth/types'
 import './shell.css'
 
-type NavItem = { to: string; label: string; end?: boolean }
+/** `also`: other URL prefixes that should keep this item highlighted (e.g. a ticket opened from the queue). */
+type NavItem = { to: string; label: string; end?: boolean; also?: string[] }
 
 const navByRole: Record<UserRole, NavItem[]> = {
-  EMPLOYEE: [
-    { to: '/portal', label: 'Mis tickets' },
-    { to: '/assistant', label: 'Asistente IA' },
-  ],
-  AGENT: [
-    { to: '/queue', label: 'Cola de tickets' },
-    { to: '/assistant', label: 'Asistente IA' },
-  ],
-  MANAGER: [
-    { to: '/dashboard', label: 'Métricas' },
-    { to: '/assistant', label: 'Asistente IA' },
-  ],
+  EMPLOYEE: [{ to: '/portal', label: 'Mis tickets' }],
+  AGENT: [{ to: '/queue', label: 'Cola de tickets', also: ['/tickets/'] }],
+  MANAGER: [{ to: '/dashboard', label: 'Métricas' }],
   ADMIN: [
     { to: '/admin', label: 'Cola de tickets', end: true },
     { to: '/dashboard', label: 'Métricas' },
     { to: '/admin/users', label: 'Usuarios y categorías' },
-    { to: '/assistant', label: 'Asistente IA' },
   ],
 }
 
@@ -33,7 +24,8 @@ export function AppShell() {
   if (!session || !role) return null
 
   const items = navByRole[role]
-  const current = items.find((item) => pathname === item.to) ?? items.find((item) => pathname.startsWith(item.to))
+  const belongsTo = (item: NavItem) => pathname === item.to || (item.also ?? []).some((prefix) => pathname.startsWith(prefix))
+  const current = items.find(belongsTo) ?? items.find((item) => pathname.startsWith(item.to))
   const displayName = user?.fullName ?? session.email.split('@')[0].replace(/[._-]+/g, ' ')
   const initials = displayName.split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase()
 
@@ -52,11 +44,11 @@ export function AppShell() {
               key={item.to}
               to={item.to}
               end={item.end}
-              className={({ isActive }) => `nav-link${isActive ? ' nav-link-active' : ''}`}
+              className={({ isActive }) => `nav-link${isActive || belongsTo(item) ? ' nav-link-active' : ''}`}
             >
               {({ isActive }) => (
                 <>
-                  {isActive && <span className="nav-indicator" aria-hidden="true" />}
+                  {(isActive || belongsTo(item)) && <span className="nav-indicator" aria-hidden="true" />}
                   {item.label}
                 </>
               )}

@@ -31,7 +31,7 @@
   padding: 14px 4px;
   border-top: 1px solid var(--border);
   display: grid;
-  grid-template-columns: 1.3fr 1.6fr 1fr 0.7fr;
+  grid-template-columns: 1.3fr 1.6fr 1fr 0.7fr 0.6fr;
   gap: 16px;
   align-items: center;
   font-size: 12px;
@@ -73,4 +73,50 @@
   border: 1px solid var(--border);
   color: #d0d0d0;
   font-size: 12px;
+}
+
+.category-row {
+  min-width: 480px;
+  grid-template-columns: 1.6fr 0.7fr auto;
+}
+
+.row-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 18px;
+}
+
+.row-actions .text-action {
+  margin-top: 0;
+  padding: 4px 0;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.row-actions .text-action:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.row-inactive {
+  opacity: 0.6;
+}
+
+.you-tag {
+  color: var(--muted-foreground);
+  font-weight: 400;
+}
+
+.admin-edit-modal {
+  max-width: 520px;
+}
+
+.check-field {
+  flex-direction: row !important;
+  align-items: center;
+  gap: 10px !important;
+}
+
+.check-field input {
+  width: auto;
 }
