@@ -192,6 +192,7 @@ export function EmployeePortal() {
     }
   }
   const inProgressCount = tickets.filter((ticket) => matchesTicketFilter(ticket, 'IN_PROGRESS')).length
+  const openCount = tickets.filter((ticket) => matchesTicketFilter(ticket, 'OPEN')).length
 
   return (
     <>
