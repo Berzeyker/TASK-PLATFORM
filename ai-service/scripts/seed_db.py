@@ -29,6 +29,7 @@ def run_seed():
             title=item["title"],
             category=item["category"],
             content=item["content"],
+            symptoms=item.get("symptoms", []),
         )
         result = index_article(request)
         print(f"[OK] {result.article_id} -> '{item['title']}' ({result.chunks_indexed} chunks indexados)")

@@ -3,36 +3,308 @@
         "article_id": "KB-001",
         "title": "Solución de errores de conexión en VPN Corporativa",
         "category": "Redes",
-        "content": "Si el cliente VPN muestra el error 'Connection Timed Out' o 'Authentication Failed', siga estos pasos: 1. Verifique que su conexión local a internet funcione abriendo un navegador. 2. Cierre completamente el cliente VPN desde la bandeja del sistema. 3. Confirme que su contraseña institucional no haya expirado en los últimos 90 días. 4. Si usa red Wi-Fi doméstica, reinicie su router o pruebe compartiendo datos móviles para descartar bloqueo de puertos UDP 1194 y 443 por parte de su proveedor de internet. 5. Si el error persiste con código 809, ejecute el solucionador de red de Windows y vuelva a intentar."
+        "content": "Si el cliente VPN muestra el error 'Connection Timed Out' o 'Authentication Failed', siga estos pasos: 1. Verifique que su conexión local a internet funcione abriendo un navegador. 2. Cierre completamente el cliente VPN desde la bandeja del sistema. 3. Confirme que su contraseña institucional no haya expirado en los últimos 90 días. 4. Si usa red Wi-Fi doméstica, reinicie su router o pruebe compartiendo datos móviles para descartar bloqueo de puertos UDP 1194 y 443 por parte de su proveedor de internet. 5. Si el error persiste con código 809, ejecute el solucionador de red de Windows y vuelva a intentar.",
+        "symptoms": [
+            "No puedo conectarme a la VPN corporativa",
+            "La VPN no conecta desde casa",
+            "La VPN no funciona",
+            "Error 809 al conectar la VPN",
+            "El cliente VPN se queda conectando y no entra",
+            "La VPN se desconecta sola"
+        ]
     },
     {
         "article_id": "KB-002",
         "title": "Restablecimiento de contraseña institucional y autenticación MFA",
         "category": "Cuentas y Accesos",
-        "content": "Para restablecer una contraseña olvidada o bloqueada: 1. Ingrese al portal de autoservicio de identidad institucional desde cualquier dispositivo. 2. Seleccione '¿Olvidó su contraseña?' e introduzca su usuario corporativo. 3. Apruebe la notificación push en la aplicación Microsoft Authenticator en su teléfono móvil. 4. Cree una nueva contraseña de al menos 12 caracteres que incluya mayúsculas, minúsculas, números y un símbolo especial, sin repetir las últimas 5 contraseñas utilizadas. 5. Si cambió de teléfono móvil y perdió acceso a Authenticator, debe abrir un ticket con soporte técnico para reiniciar su token MFA."
+        "content": "Para restablecer una contraseña olvidada o bloqueada: 1. Ingrese al portal de autoservicio de identidad institucional desde cualquier dispositivo. 2. Seleccione '¿Olvidó su contraseña?' e introduzca su usuario corporativo. 3. Apruebe la notificación push en la aplicación Microsoft Authenticator en su teléfono móvil. 4. Cree una nueva contraseña de al menos 12 caracteres que incluya mayúsculas, minúsculas, números y un símbolo especial, sin repetir las últimas 5 contraseñas utilizadas. 5. Si cambió de teléfono móvil y perdió acceso a Authenticator, debe abrir un ticket con soporte técnico para reiniciar su token MFA.",
+        "symptoms": [
+            "Olvidé mi contraseña institucional",
+            "No puedo iniciar sesión con mi cuenta",
+            "Mi contraseña expiró y no puedo entrar",
+            "No puedo pasar la verificación MFA",
+            "Perdí el acceso a Microsoft Authenticator",
+            "Cambié de teléfono y no puedo entrar con MFA"
+        ]
     },
     {
         "article_id": "KB-003",
         "title": "Configuración y solución de atascos en impresoras de red",
         "category": "Hardware e Impresión",
-        "content": "Cuando los documentos se quedan en cola de impresión sin salir: 1. Verifique en la pantalla física de la impresora que tenga papel en la bandeja correcta y no muestre alertas de tóner agotado o atasco. 2. En su computadora Windows, presione Win + R, escriba 'services.msc' y presione Enter. 3. Busque el servicio 'Cola de impresión' (Print Spooler), haga clic derecho y seleccione 'Reiniciar'. 4. Si la impresora aparece como 'Sin conexión', elimine el dispositivo en Configuración > Bluetooth y dispositivos > Impresoras y escáneres, y vuelva a agregarla buscando por el nombre de red del piso."
+        "content": "Cuando los documentos se quedan en cola de impresión sin salir: 1. Verifique en la pantalla física de la impresora que tenga papel en la bandeja correcta y no muestre alertas de tóner agotado o atasco. 2. En su computadora Windows, presione Win + R, escriba 'services.msc' y presione Enter. 3. Busque el servicio 'Cola de impresión' (Print Spooler), haga clic derecho y seleccione 'Reiniciar'. 4. Si la impresora aparece como 'Sin conexión', elimine el dispositivo en Configuración > Bluetooth y dispositivos > Impresoras y escáneres, y vuelva a agregarla buscando por el nombre de red del piso.",
+        "symptoms": [
+            "La impresora no imprime",
+            "No puedo imprimir",
+            "Los documentos se quedan en la cola de impresión",
+            "La impresora tiene un atasco de papel",
+            "La impresora aparece sin conexión"
+        ]
     },
     {
         "article_id": "KB-004",
         "title": "Solución a lentitud y problemas de sincronización en Outlook",
         "category": "Software y Correo",
-        "content": "Si Microsoft Outlook tarda en recibir correos o se queda congelado en 'Actualizando carpeta': 1. Verifique en la barra inferior derecha que no esté activado el modo 'Trabajar sin conexión' (Work Offline). 2. Cierre Outlook completamente. 3. Presione Win + R, escriba 'outlook.exe /safe' y presione Enter para abrirlo en modo seguro y descartar complementos dañados. 4. Si el archivo OST supera los 45 GB, archive correos antiguos de hace más de 2 años en un archivo local PST o reduzca el deslizador de caché de correo a 12 meses en Configuración de la cuenta."
+        "content": "Si Microsoft Outlook tarda en recibir correos o se queda congelado en 'Actualizando carpeta': 1. Verifique en la barra inferior derecha que no esté activado el modo 'Trabajar sin conexión' (Work Offline). 2. Cierre Outlook completamente. 3. Presione Win + R, escriba 'outlook.exe /safe' y presione Enter para abrirlo en modo seguro y descartar complementos dañados. 4. Si el archivo OST supera los 45 GB, archive correos antiguos de hace más de 2 años en un archivo local PST o reduzca el deslizador de caché de correo a 12 meses en Configuración de la cuenta.",
+        "symptoms": [
+            "Outlook no sincroniza",
+            "No llegan los correos a Outlook",
+            "No puedo enviar correos desde Outlook",
+            "Outlook está muy lento",
+            "Outlook se queda cargando o congelado"
+        ]
     },
     {
         "article_id": "KB-005",
         "title": "Solicitud de instalación de software autorizado",
         "category": "Software y Licencias",
-        "content": "Por políticas de seguridad informática, los usuarios estándar no poseen permisos de administrador local para instalar archivos .exe o .msi. 1. Antes de solicitar un programa, revise el catálogo de aplicaciones aprobadas en el 'Centro de Software' de su equipo. 2. Si el software requerido no aparece en el catálogo (por ejemplo, herramientas de desarrollo, diseño CAD o editores especializados), cree un ticket en la categoría Software indicando el nombre exacto del programa, versión, justificación de negocio y aprobación de su jefe directo."
+        "content": "Por políticas de seguridad informática, los usuarios estándar no poseen permisos de administrador local para instalar archivos .exe o .msi. 1. Antes de solicitar un programa, revise el catálogo de aplicaciones aprobadas en el 'Centro de Software' de su equipo. 2. Si el software requerido no aparece en el catálogo (por ejemplo, herramientas de desarrollo, diseño CAD o editores especializados), cree un ticket en la categoría Software indicando el nombre exacto del programa, versión, justificación de negocio y aprobación de su jefe directo.",
+        "symptoms": [
+            "Necesito instalar un programa",
+            "Necesito instalar AutoCAD",
+            "Quiero instalar un programa",
+            "No puedo instalar un programa",
+            "No tengo permisos de administrador para instalar software",
+            "Quiero solicitar la instalación de una aplicación",
+            "El programa que necesito no está en el Centro de Software"
+        ]
     },
     {
         "article_id": "KB-006",
         "title": "Falla de internet, problemas de DNS y pérdida intermitente de Wi-Fi",
         "category": "Redes",
-        "content": "Si presenta falla de internet en sala, su equipo muestra 'Conectado, sin acceso a internet' o no cargan las páginas internas: 1. Desactive y vuelva a activar el adaptador Wi-Fi desde la barra de tareas. 2. Abra una consola de comandos (CMD) y ejecute el comando 'ipconfig /flushdns' para limpiar la caché de resolución de nombres. 3. Ejecute 'ipconfig /release' seguido de 'ipconfig /renew' para solicitar una nueva dirección en la red local. 4. Si el problema ocurre únicamente en una sala de juntas específica, reporte la ubicación exacta para revisar el punto de acceso inalámbrico."
+        "content": "Si presenta falla de internet en sala, su equipo muestra 'Conectado, sin acceso a internet' o no cargan las páginas internas: 1. Desactive y vuelva a activar el adaptador Wi-Fi desde la barra de tareas. 2. Abra una consola de comandos (CMD) y ejecute el comando 'ipconfig /flushdns' para limpiar la caché de resolución de nombres. 3. Ejecute 'ipconfig /release' seguido de 'ipconfig /renew' para solicitar una nueva dirección en la red local. 4. Si el problema ocurre únicamente en una sala de juntas específica, reporte la ubicación exacta para revisar el punto de acceso inalámbrico.",
+        "symptoms": [
+            "No tengo internet",
+            "No puedo conectarme al Wi-Fi de la oficina",
+            "No puedo conectarme a internet",
+            "El Wi-Fi se cae o es intermitente",
+            "Mi equipo dice conectado sin acceso a internet",
+            "Las páginas no cargan por problemas de DNS"
+        ]
+    },
+    {
+        "article_id": "KB-007",
+        "title": "Computadora no funciona, no enciende o está muy lenta",
+        "category": "Hardware e Impresión",
+        "content": "Si su equipo de cómputo no enciende, la pantalla queda en negro o el rendimiento es muy bajo, siga estos pasos: 1. Verifique que el equipo esté conectado a la corriente y que el cargador tenga el indicador encendido; si la batería está agotada, déjelo cargando 15 minutos antes de intentar encenderlo. 2. Mantenga presionado el botón de encendido durante 10 segundos para forzar un apagado y vuelva a encenderlo. 3. Confirme que el monitor esté encendido y que el cable de video esté bien conectado a la torre o al puerto de la laptop. 4. Si el equipo enciende pero está lento, cierre las aplicaciones que no esté usando, reinicie el equipo y revise que el disco tenga al menos 10 GB libres. 5. Si el equipo se reinicia solo o muestra una pantalla azul, anote el mensaje de error exacto. 6. Si el problema continúa, registre el número de inventario del equipo y repórtelo al equipo de soporte para una revisión física.",
+        "symptoms": [
+            "No me funciona la computadora",
+            "La computadora no funciona",
+            "Mi laptop no enciende",
+            "La computadora no enciende",
+            "La computadora está muy lenta",
+            "El monitor no da imagen",
+            "La PC no prende",
+            "El equipo se reinicia solo",
+            "La pantalla se queda en negro"
+        ]
+    },
+    {
+        "article_id": "KB-008",
+        "title": "Pantalla azul (BSOD) y reinicios inesperados",
+        "category": "Hardware e Impresión",
+        "content": "Si su equipo muestra una pantalla azul con un código de error y se reinicia solo: 1. Anote el código de error exacto (por ejemplo, IRQL_NOT_LESS_OR_EQUAL o CRITICAL_PROCESS_DIED) y el nombre del archivo mencionado. 2. Reinicie el equipo y verifique que no haya actualizaciones de Windows pendientes en Configuración > Windows Update. 3. Desinstale el último programa o controlador instalado antes de que apareciera el error desde Panel de control > Programas. 4. Ejecute el comprobador de archivos del sistema: abra CMD como administrador y ejecute 'sfc /scannow', luego 'DISM /Online /Cleanup-Image /RestoreHealth'. 5. Si el error persiste, reporte el código y el número de inventario del equipo al equipo de soporte para revisión de hardware.",
+        "symptoms": [
+            "Pantalla azul",
+            "BSOD",
+            "El equipo se reinicia solo",
+            "Pantalla azul con código de error",
+            "El computador se apaga y muestra pantalla azul"
+        ]
+    },
+    {
+        "article_id": "KB-009",
+        "title": "Cámara o micrófono no funcionan en Teams o Zoom",
+        "category": "Software y Correo",
+        "content": "Si en Microsoft Teams o Zoom no se detecta la cámara o el micrófono: 1. Verifique en la aplicación que el dispositivo correcto esté seleccionado en Configuración > Dispositivos. 2. Cierre otras aplicaciones que puedan estar usando la cámara (navegador, otra videollamada). 3. En Windows, vaya a Configuración > Privacidad > Cámara y Micrófono y asegúrese de que el acceso esté permitido para aplicaciones de escritorio. 4. Actualice el controlador de la cámara desde el Administrador de dispositivos. 5. Si usa un equipo de escritorio con cámara web USB, pruebe otro puerto USB. 6. Si el problema continúa, reporte el modelo del equipo y la aplicación afectada.",
+        "symptoms": [
+            "La cámara no funciona en Teams",
+            "El micrófono no se escucha en Zoom",
+            "No detecta la cámara en la videollamada",
+            "No puedo activar la cámara en Teams",
+            "El micrófono no funciona en la reunión"
+        ]
+    },
+    {
+        "article_id": "KB-010",
+        "title": "Equipo lento o disco casi lleno",
+        "category": "Hardware e Impresión",
+        "content": "Si su equipo está muy lento o muestra alerta de disco lleno: 1. Revise el espacio libre del disco C: en 'Este equipo'; si tiene menos de 10 GB libres, continúe con los siguientes pasos. 2. Ejecute 'Liberador de espacio en disco' (cleanmgr) y seleccione archivos temporales, caché del navegador y archivos de actualización de Windows. 3. Desinstale programas que no use desde Panel de control > Programas. 4. Vacíe la papelera de reciclaje. 5. Revise el Administrador de tareas para identificar procesos que consuman mucha CPU o memoria y cierre los que no sean necesarios. 6. Si el problema persiste tras liberar espacio, reporte el equipo para revisión de posible reemplazo de disco o ampliación de memoria.",
+        "symptoms": [
+            "El equipo está muy lento",
+            "El disco está lleno",
+            "No hay espacio en el disco",
+            "El computador va muy lento",
+            "Alerta de poco espacio en disco"
+        ]
+    },
+    {
+        "article_id": "KB-011",
+        "title": "Teclado o mouse no responde",
+        "category": "Hardware e Impresión",
+        "content": "Si el teclado o el mouse dejan de funcionar: 1. Si es inalámbrico, verifique que tenga batería y que el receptor USB esté bien conectado; cambie las baterías si es necesario. 2. Desconecte y vuelva a conectar el dispositivo USB. 3. Pruebe el dispositivo en otro puerto USB o en otro equipo para descartar falla del periférico. 4. Reinicie el equipo. 5. En el Administrador de dispositivos, desinstale el controlador del teclado o mouse y reinicie para que Windows lo reinstale automáticamente. 6. Si el problema continúa, solicite un periférico de reemplazo indicando el número de inventario del equipo.",
+        "symptoms": [
+            "El teclado no funciona",
+            "El mouse no responde",
+            "El teclado inalámbrico no conecta",
+            "El mouse se mueve solo o no se mueve",
+            "No puedo escribir con el teclado"
+        ]
+    },
+    {
+        "article_id": "KB-012",
+        "title": "Cuenta bloqueada o contraseña expirada",
+        "category": "Cuentas y Accesos",
+        "content": "Si su cuenta institucional está bloqueada o la contraseña expiró: 1. Espere 15 minutos, ya que el bloqueo automático por intentos fallidos se libera después de ese tiempo. 2. Intente restablecer su contraseña desde el portal de autoservicio de identidad. 3. Si el portal no le permite restablecerla, verifique que su correo personal de recuperación esté actualizado. 4. Si la cuenta sigue bloqueada, abra un ticket indicando su usuario corporativo y el mensaje de error exacto. 5. No intente adivinar la contraseña repetidamente, ya que eso prolonga el bloqueo.",
+        "symptoms": [
+            "Mi cuenta está bloqueada",
+            "La contraseña expiró",
+            "No puedo entrar porque la cuenta está bloqueada",
+            "Me dice que la cuenta está deshabilitada",
+            "Intenté muchas veces y ahora no puedo entrar"
+        ]
+    },
+    {
+        "article_id": "KB-013",
+        "title": "OneDrive o SharePoint no sincroniza archivos",
+        "category": "Software y Correo",
+        "content": "Si OneDrive o SharePoint no sincroniza sus archivos: 1. Verifique en el icono de la nube en la barra de tareas que no haya un error (triángulo amarillo o rojo). 2. Haga clic derecho en el icono de OneDrive y seleccione 'Pausar sincronización' y luego 'Reanudar'. 3. Cierre OneDrive completamente y vuelva a abrirlo. 4. Verifique que tenga espacio disponible en su OneDrive (límite de 1 TB por usuario). 5. Si un archivo específico no sincroniza, revise que no tenga caracteres especiales en el nombre (/, \\, :, *, ?, \", <, >, |). 6. Si el problema persiste, desvincule y vuelva a vincular su cuenta de OneDrive desde Configuración > Cuenta > Desvincular este equipo.",
+        "symptoms": [
+            "OneDrive no sincroniza",
+            "Los archivos no se suben a OneDrive",
+            "SharePoint no sincroniza",
+            "OneDrive muestra error de sincronización",
+            "Mis archivos no aparecen en la nube"
+        ]
+    },
+    {
+        "article_id": "KB-014",
+        "title": "Microsoft Teams no conecta o no carga",
+        "category": "Software y Correo",
+        "content": "Si Microsoft Teams no carga o no puede conectarse: 1. Verifique su conexión a internet. 2. Cierre Teams completamente (incluyendo el icono en la bandeja del sistema) y vuelva a abrirlo. 3. Limpie la caché de Teams: cierre Teams, presione Win + R, escriba '%appdata%\\Microsoft\\Teams' y elimine el contenido de las carpetas 'Cache', 'blob_storage', 'databases' y 'GPUCache'. 4. Vuelva a abrir Teams. 5. Si el problema persiste, desinstale Teams y descárguelo nuevamente desde el portal de Microsoft 365. 6. Si otros compañeros también tienen el problema, puede ser una caída del servicio; verifique en https://status.office.com.",
+        "symptoms": [
+            "Teams no carga",
+            "Teams no se conecta",
+            "Teams se queda en blanco",
+            "No puedo entrar a Teams",
+            "Teams muestra error de conexión"
+        ]
+    },
+    {
+        "article_id": "KB-015",
+        "title": "Activación de Office o licencia de Microsoft 365",
+        "category": "Software y Licencias",
+        "content": "Si Office muestra 'Producto sin licencia' o pide activación: 1. Verifique que haya iniciado sesión con su cuenta institucional en cualquier aplicación de Office (Archivo > Cuenta). 2. Si inició sesión con otra cuenta, cierre sesión y vuelva a entrar con su correo corporativo. 3. Ejecute la herramienta de solución de problemas de activación de Office desde la página de soporte de Microsoft. 4. Si la licencia expiró, contacte al equipo de soporte para verificar la asignación de licencia. 5. No use claves de producto piratas ni compartidas; la institución asigna licencias automáticamente según el rol del usuario.",
+        "symptoms": [
+            "Office dice producto sin licencia",
+            "Word pide activación",
+            "Excel no tiene licencia",
+            "Microsoft 365 no está activado",
+            "La licencia de Office expiró"
+        ]
+    },
+    {
+        "article_id": "KB-016",
+        "title": "Disco de red o carpeta compartida no accesible",
+        "category": "Redes",
+        "content": "Si no puede acceder a una carpeta compartida o disco de red: 1. Verifique que esté conectado a la red corporativa (cable o VPN). 2. Intente acceder usando la ruta UNC directamente: \\\\servidor\\carpeta en el Explorador de archivos. 3. Si aparece 'Acceso denegado', verifique que su usuario tenga permisos; contacte al responsable de la carpeta. 4. Reinicie el servicio 'Estación de trabajo' (Workstation) desde services.msc. 5. Si la carpeta aparecía como unidad de red asignada y ahora no, reasigne la unidad desde 'Este equipo > Conectar a unidad de red'. 6. Si el problema persiste, reporte la ruta de la carpeta y su usuario corporativo.",
+        "symptoms": [
+            "No puedo acceder a la carpeta compartida",
+            "El disco de red no aparece",
+            "Acceso denegado a la carpeta de red",
+            "No puedo abrir los archivos compartidos",
+            "La unidad de red desapareció"
+        ]
+    },
+    {
+        "article_id": "KB-017",
+        "title": "Escritorio remoto (RDP) no conecta",
+        "category": "Redes",
+        "content": "Si no puede conectarse por Escritorio Remoto a un equipo: 1. Verifique que el equipo destino esté encendido y conectado a la red. 2. Confirme que el Escritorio Remoto esté habilitado en el equipo destino (Configuración > Sistema > Escritorio remoto). 3. Si se conecta desde fuera de la oficina, asegúrese de estar conectado a la VPN corporativa primero. 4. Verifique que no haya un firewall bloqueando el puerto 3389. 5. Si aparece 'Credenciales incorrectas', asegúrese de usar el formato DOMINIO\\usuario. 6. Si el problema persiste, reporte el nombre del equipo destino y su ubicación.",
+        "symptoms": [
+            "No puedo conectarme por escritorio remoto",
+            "RDP no conecta",
+            "El escritorio remoto da error",
+            "No puedo acceder al equipo remoto",
+            "Escritorio remoto no funciona desde casa"
+        ]
+    },
+    {
+        "article_id": "KB-018",
+        "title": "Correo sospechoso o posible phishing",
+        "category": "Seguridad",
+        "content": "Si recibió un correo sospechoso o cree que es phishing: 1. NO haga clic en ningún enlace ni descargue archivos adjuntos. 2. NO responda al correo ni proporcione credenciales. 3. Marque el correo como 'Correo no deseado' o 'Phishing' en Outlook. 4. Reporte el correo al equipo de seguridad informática reenviándolo como adjunto. 5. Si ya hizo clic en un enlace o ingresó credenciales, cambie su contraseña inmediatamente y reporte el incidente. 6. Verifique en el remitente real (no el nombre mostrado) si el dominio es legítimo.",
+        "symptoms": [
+            "Recibí un correo sospechoso",
+            "Creo que es phishing",
+            "Un correo pide mis credenciales",
+            "Correo fraudulento",
+            "Correo sospechoso con enlace"
+        ]
+    },
+    {
+        "article_id": "KB-019",
+        "title": "Navegador lento o páginas no cargan",
+        "category": "Software y Correo",
+        "content": "Si el navegador está lento o las páginas no cargan: 1. Limpie la caché y las cookies del navegador (Ctrl + Shift + Delete). 2. Desactive las extensiones una por una para identificar si alguna causa el problema. 3. Verifique que no esté usando una VPN que bloquee ciertos sitios. 4. Pruebe en modo incógnito o con otro navegador. 5. Actualice el navegador a la última versión. 6. Si solo ciertos sitios no cargan, verifique si están bloqueados por el firewall corporativo. 7. Si el problema persiste en todos los navegadores, puede ser un problema de red; reporte la URL afectada.",
+        "symptoms": [
+            "El navegador está lento",
+            "Las páginas no cargan",
+            "Chrome no funciona",
+            "Edge está muy lento",
+            "No puedo abrir páginas web"
+        ]
+    },
+    {
+        "article_id": "KB-020",
+        "title": "Excel o Word no abre o se congela",
+        "category": "Software y Correo",
+        "content": "Si Excel o Word no abre o se congela: 1. Cierre la aplicación desde el Administrador de tareas si está congelada. 2. Abra la aplicación en modo seguro: presione Win + R y escriba 'excel /safe' o 'winword /safe'. 3. Si abre en modo seguro, desactive los complementos (Archivo > Opciones > Complementos). 4. Repare Office desde Panel de control > Programas > Microsoft 365 > Cambiar > Reparación rápida. 5. Si el archivo específico no abre, puede estar corrupto; intente abrirlo desde otra computadora o restaure desde OneDrive. 6. Si el problema persiste, reporte el nombre del archivo y el mensaje de error.",
+        "symptoms": [
+            "Excel no abre",
+            "Word se congela",
+            "Excel está muy lento",
+            "No puedo abrir un archivo de Excel",
+            "Word no responde"
+        ]
+    },
+    {
+        "article_id": "KB-021",
+        "title": "Configuración de monitor o pantalla secundaria",
+        "category": "Hardware e Impresión",
+        "content": "Si su monitor no muestra imagen o la configuración de pantalla es incorrecta: 1. Verifique que el cable de video (HDMI, DisplayPort, VGA) esté bien conectado en ambos extremos. 2. Presione Win + P para seleccionar el modo de pantalla (Solo PC, Duplicar, Extender, Solo segundo). 3. Si usa una base de conexión (docking station), verifique que esté bien conectada y con alimentación. 4. Actualice el controlador de la tarjeta de video desde el Administrador de dispositivos. 5. Si la resolución es incorrecta, vaya a Configuración > Sistema > Pantalla y ajuste la resolución recomendada. 6. Si el monitor muestra 'Sin señal', pruebe otro cable o puerto.",
+        "symptoms": [
+            "El monitor no muestra imagen",
+            "La pantalla secundaria no funciona",
+            "No puedo configurar el segundo monitor",
+            "El monitor dice sin señal",
+            "La resolución de la pantalla está mal"
+        ]
+    },
+    {
+        "article_id": "KB-022",
+        "title": "Audio o sonido no funciona",
+        "category": "Hardware e Impresión",
+        "content": "Si no hay sonido en su equipo: 1. Verifique que el volumen no esté en silencio (icono de altavoz en la barra de tareas). 2. Compruebe que el dispositivo de salida correcto esté seleccionado (clic en el icono de altavoz > seleccionar dispositivo). 3. Si usa audífonos o bocinas externas, verifique la conexión física o Bluetooth. 4. Actualice el controlador de audio desde el Administrador de dispositivos. 5. Ejecute el solucionador de problemas de audio de Windows (Configuración > Sistema > Solucionar problemas > Reproducción de audio). 6. Si el problema persiste, reporte el modelo del equipo.",
+        "symptoms": [
+            "No hay sonido",
+            "El audio no funciona",
+            "No se escucha nada",
+            "Los audífonos no funcionan",
+            "El volumen está en cero y no sube"
+        ]
+    },
+    {
+        "article_id": "KB-023",
+        "title": "Onboarding: configuración inicial de equipo nuevo",
+        "category": "Cuentas y Accesos",
+        "content": "Si recibió un equipo nuevo y necesita configurarlo: 1. Conecte el equipo a la red corporativa (cable o Wi-Fi). 2. Inicie sesión con su cuenta institucional. 3. Verifique que OneDrive esté sincronizando sus archivos. 4. Instale las aplicaciones necesarias desde el Centro de Software. 5. Configure Outlook con su cuenta institucional. 6. Conecte la impresora de su piso desde Configuración > Impresoras. 7. Si necesita software adicional no disponible en el catálogo, cree un ticket en la categoría Software. 8. Si algún paso falla, reporte el número de inventario del equipo y el error específico.",
+        "symptoms": [
+            "Recibí un equipo nuevo",
+            "Necesito configurar mi computadora nueva",
+            "Es mi primer día y no tengo acceso",
+            "Onboarding de equipo",
+            "Configuración inicial del equipo"
+        ]
     }
 ]

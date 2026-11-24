@@ -18,10 +18,13 @@ def sanitize_text(text: str) -> str:
     )
     sanitized = re.sub(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", "", sanitized)
 
-    # 2. Eliminar contraseñas, tokens o llaves explícitas
+    # 2. Enmascarar el VALOR de contraseñas, tokens o llaves explícitas.
+    #    Importante: se conserva la palabra ("contraseña", "token") porque es
+    #    vocabulario clave para la búsqueda semántica; solo se tacha el secreto.
+    secret_word = r"(?:password|passwd|pwd|contrase[nñ]a|clave|secret|token|api_key|apikey|bearer)"
     sanitized = re.sub(
-        r'\b(?:y\s+)?(?:password|passwd|pwd|contrase[nñ]a|clave|secret|token|api_key|apikey|bearer)\s*[:=]?\s*["\']?[^\s,"\']+["\']?',
-        "",
+        r"\b(" + secret_word + r")\b(\s*(?::|=|\bes\b)\s*)[\"']?[^\s,;\"']+[\"']?",
+        r"\1\2[REDACTADO]",
         sanitized,
         flags=re.IGNORECASE,
     )

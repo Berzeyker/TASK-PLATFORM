@@ -70,6 +70,26 @@ def index_article(payload: IngestArticleRequest) -> IngestArticleResponse:
         }
     )
 
+    # Vectores de sinónimos: cada frase típica del empleado se indexa por separado.
+    # Comparar una consulta corta contra una frase corta da una similitud mucho más
+    # fiable que compararla contra un artículo completo.
+    for sym_index, symptom in enumerate(payload.symptoms or []):
+        clean_symptom = sanitize_text(symptom).strip()
+        if len(clean_symptom) < 4:
+            continue
+        ids.append(f"{payload.article_id}_symptom_{sym_index}")
+        embeddings.append(embedder.encode(clean_symptom).tolist())
+        documents.append(clean_symptom)
+        metadatas.append(
+            {
+                "article_id": payload.article_id,
+                "title": clean_title,
+                "category": payload.category,
+                "chunk_index": -2,
+                "full_content": clean_content,
+            }
+        )
+
     # Vectores de contenido fragmentado
     for idx, chunk in enumerate(chunks):
         enriched_text = f"{clean_title}. {chunk}"
@@ -234,7 +254,20 @@ def troubleshoot_problem(payload: TroubleshootRequest) -> TroubleshootResponse:
 
     user_prompt = f"Authorized Knowledge Base Context:\n{context_str}\n\nEmployee Issue:\n{clean_query}"
 
-    ai_reply = _call_llm(system_prompt, user_prompt)
+    try:
+        ai_reply = _call_llm(system_prompt, user_prompt)
+    except Exception as exc:  # sin API key, sin red o proveedor caído
+        print(f"[LLM NO DISPONIBLE] {exc}")
+        return TroubleshootResponse(
+            resolved_by_ai=False,
+            suggested_category=inferred_category,
+            confidence=best_score,
+            should_escalate=True,
+            escalation_reason=(
+                "El modelo de lenguaje no está disponible en este momento "
+                f"({exc}). Se recomienda escalar el caso a un agente."
+            ),
+        )
 
     if "INSUFFICIENT_CONTEXT" in ai_reply:
         return TroubleshootResponse(

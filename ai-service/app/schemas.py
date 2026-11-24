@@ -15,6 +15,10 @@ class IngestArticleRequest(BaseModel):
     title: str = Field(..., min_length=3, description="Título del manual o guía técnica")
     category: str = Field(..., min_length=2, description="Categoría técnica (ej. Redes, Hardware, Software)")
     content: str = Field(..., min_length=10, description="Contenido completo en Markdown o texto plano")
+    symptoms: Optional[List[str]] = Field(
+        default=None,
+        description="Frases con las que los empleados describen el problema (mejora el emparejamiento semántico)",
+    )
 
 
 class IngestArticleResponse(BaseModel):

@@ -46,12 +46,13 @@ export function AssistantPage() {
   const [draft, setDraft] = useState('')
   const [isThinking, setIsThinking] = useState(false)
   const [error, setError] = useState('')
+  const [validation, setValidation] = useState('')
   const [failedQuery, setFailedQuery] = useState('')
   const threadEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
   const isEmptyConversation = messages.length === 1 && !messages[0].result
-  const canSend = draft.trim().length >= MIN_QUERY_LENGTH && !isThinking
+  const canSend = !isThinking
 
   useEffect(() => {
     threadEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
@@ -59,11 +60,17 @@ export function AssistantPage() {
 
   async function sendMessage(rawText: string) {
     const text = rawText.trim()
-    if (text.length < MIN_QUERY_LENGTH || isThinking) return
+    if (isThinking) return
+    if (text.length < MIN_QUERY_LENGTH) {
+      setValidation(`Escribe al menos ${MIN_QUERY_LENGTH} caracteres para enviar.`)
+      inputRef.current?.focus()
+      return
+    }
 
     const userMessage: AssistantChatMessage = { id: createId(), role: 'user', text }
     setMessages((current) => [...current, userMessage])
     setDraft('')
+    setValidation('')
     setError('')
     setFailedQuery('')
     setIsThinking(true)
@@ -94,13 +101,16 @@ export function AssistantPage() {
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    void sendMessage(draft)
+    // Read the live value as well: it guarantees the actual typed text is sent
+    // even if a keystroke/IME has not been committed to React state yet.
+    void sendMessage(inputRef.current?.value ?? draft)
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
     if (event.key === 'Enter' && !event.shiftKey) {
+      if (event.nativeEvent.isComposing) return
       event.preventDefault()
-      void sendMessage(draft)
+      void sendMessage(event.currentTarget.value)
     }
   }
 
@@ -108,6 +118,7 @@ export function AssistantPage() {
     setMessages([welcomeMessage()])
     setDraft('')
     setError('')
+    setValidation('')
     setFailedQuery('')
     setIsThinking(false)
     inputRef.current?.focus()
@@ -241,21 +252,33 @@ export function AssistantPage() {
             id="assistant-input"
             ref={inputRef}
             value={draft}
-            onChange={(event) => setDraft(event.target.value)}
+            onChange={(event) => {
+              setDraft(event.target.value)
+              if (validation) setValidation('')
+            }}
             onKeyDown={handleKeyDown}
             placeholder="Describe el problema: qué ocurre, desde cuándo y qué has intentado…"
             rows={3}
             maxLength={3000}
-            disabled={isThinking}
+            autoFocus
           />
           <div className="assistant-composer-actions">
             <span className="assistant-hint">
               <kbd>Enter</kbd> enviar · <kbd>Shift</kbd> + <kbd>Enter</kbd> salto de línea
             </span>
-            <button className="primary-action" type="submit" disabled={!canSend}>
+            <button
+              className="primary-action"
+              type="submit"
+              disabled={!canSend}
+            >
               {isThinking ? 'Consultando…' : 'Enviar'} <span aria-hidden="true">→</span>
             </button>
           </div>
+          {(validation || (draft.trim().length > 0 && draft.trim().length < MIN_QUERY_LENGTH)) && (
+            <p className="assistant-min-hint" role="status">
+              {validation || `Escribe al menos ${MIN_QUERY_LENGTH} caracteres para enviar.`}
+            </p>
+          )}
         </form>
       </div>
     </section>
