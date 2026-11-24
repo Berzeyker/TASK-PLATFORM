@@ -59,7 +59,7 @@ py -3 scripts/seed_db.py
 py -3 -m uvicorn app.main:app --host 127.0.0.1 --port 8001
 ```
 
-- `seed_db.py` indexa los manuales de `data/seed_manuals.json` (23 artículos, 289 fragmentos)
+- `seed_db.py` indexa los manuales de `data/seed_manuals.json` (35 artículos, 432 fragmentos)
   en ChromaDB. Sin este paso la colección está vacía y el asistente no responde.
 - Cada artículo incluye una lista `symptoms` con las frases con las que los empleados
   describen el problema; se indexan por separado para que una pregunta corta compare
@@ -67,7 +67,7 @@ py -3 -m uvicorn app.main:app --host 127.0.0.1 --port 8001
 - La primera ejecución descarga el modelo de embeddings
   (`paraphrase-multilingual-MiniLM-L12-v2`, ~470 MB) desde Hugging Face.
 - Verifica que esté arriba: `http://127.0.0.1:8001/health` debe devolver
-  `"indexed_chunks": 146`.
+  `"indexed_chunks": 432`.
 
 ### 3. Configurar el dashboard
 
@@ -109,21 +109,6 @@ más temas, agrega más artículos. Hay dos formas:
 3. Ejecuta `py -3 scripts/seed_db.py` (reemplaza todo) o indexa uno solo con
    `POST /api/v1/knowledge/index`.
 
-Ejemplo mínimo:
-
-```json
-{
-  "article_id": "KB-012",
-  "title": "Cómo resetear la contraseña del Wi-Fi invitado",
-  "category": "Redes",
-  "content": "Pasos para resetear... 1. ... 2. ...",
-  "symptoms": [
-    "No puedo conectarme al Wi-Fi de invitados",
-    "El Wi-Fi de visitas no funciona"
-  ]
-}
-```
-
 ### Opción B — Desde la aplicación (producción)
 
 1. Un agente o administrador crea un artículo en `DRAFT` desde el panel de KB.
@@ -133,15 +118,74 @@ Ejemplo mínimo:
 
 ### Consejos para que la IA responda bien
 
-- **Título con vocabulario del empleado**, no técnico: "Computadora no enciende" mejor
-  que "Falla de encendido en estación de trabajo".
-- **Lista `symptoms`** con las frases reales que usaría un empleado (incluye
-  sinónimos, typos comunes y variantes).
-- **Contenido con pasos numerados y claros**: el modelo los reproduce tal cual.
-- **No incluyas datos sensibles** (IPs, contraseñas reales): el sanador los tacha,
-  pero mejor no ponerlos.
-- **Reindexa** tras cambiar un artículo: `py -3 scripts/seed_db.py` (dev) o
-  republica el artículo (prod).
+- **Título con vocabulario del empleado**, no técnico.
+- **Lista `symptoms`** con las frases reales que usaría un empleado.
+- **Contenido con pasos numerados y claros**.
+- **No incluyas datos sensibles** (IPs, contraseñas reales).
+- **Reindexa** tras cambiar un artículo.
+
+## Rutas y roles
+
+| Ruta | Roles | Descripción |
+|---|---|---|
+| `/login` | Todos | Inicio de sesión |
+| `/portal` | EMPLOYEE | Mis tickets, crear ticket con adjuntos, calificar |
+| `/assistant` | Todos | Chat con el asistente de IA (RAG) |
+| `/queue` | AGENT, ADMIN | Cola de tickets, tomar, clasificar, resolver, cerrar |
+| `/tickets/:id` | AGENT, ADMIN | Detalle de ticket con acciones |
+| `/kb` | AGENT, MANAGER, ADMIN | Gestión de base de conocimiento |
+| `/dashboard` | MANAGER, ADMIN | Métricas y gráficos |
+| `/admin` | ADMIN | Cola de tickets (vista admin) |
+| `/admin/users` | ADMIN | Gestión de usuarios y categorías |
+
+## Comandos útiles
+
+```powershell
+# Frontend
+cd task-dashboard
+npm run dev          # desarrollo (http://localhost:5173)
+npm run build        # build de producción
+npm run lint         # ESLint
+npm run test         # Vitest (19 tests)
+npm run test:watch   # Vitest en modo watch
+
+# Backend
+cd backend
+npm run dev          # desarrollo (http://localhost:3000)
+npm run build        # compilar TypeScript
+npm run migrate      # migraciones Prisma
+npm run seed         # seed de usuarios y categorías
+
+# IA
+cd ai-service
+py -3 -m uvicorn app.main:app --host 127.0.0.1 --port 8001
+py -3 scripts/seed_db.py   # indexar artículos en ChromaDB
+```
+
+## Estado del proyecto
+
+### Implementado
+
+- **F-01** Router, role guards, AuthProvider, apiRequest
+- **F-02** Portal de empleado (detalle, adjuntos, polling, calificación, privacidad)
+- **F-03** Cola de agentes (acciones, detalle, timeline, reglas de transición)
+- **F-04** Campana de notificaciones (polling 30s, dropdown, marcar leído)
+- **F-05** Widget de deflexión IA en el formulario de ticket
+- **F-06** Quality pass (Vitest, 19 tests, loading/empty/error states)
+- **F-07** Gestión de KB (lista, editor Markdown, preview, ciclo de vida)
+- **F-08** Dashboard de manager (métricas, gráficos)
+- **F-09** Panel de admin (cola, usuarios, categorías)
+- **AI RAG** 35 artículos, 432 fragmentos, sanador, seguridad
+- **B-05** Gestión de usuarios y categorías (admin)
+
+### Pendiente
+
+- **B-04** Cifrado AES-256-GCM de campos sensibles
+- **B-06** Rutas AI gateway en backend (`/ai/query`, `/ai/feedback`)
+- **B-07** Sincronización automática de artículos publicados con ChromaDB
+- **I-01** Docker Compose del stack completo + CI
+- **A-06** Evaluación con Ragas y benchmark de latencia
+- **D-02** Manual de usuario y documentación final
 
 ## Problemas frecuentes
 
@@ -168,13 +212,11 @@ Es el comportamiento esperado cuando no hay un artículo suficientemente relacio
 crea el ticket para que un agente lo revise. Si el tema sí está en la base, revisa que el
 artículo esté `PUBLISHED` y que se haya reindexado.
 
-## Estado del proyecto
+## Seguridad
 
-Las tareas pendientes (frontend, backend, IA, infraestructura y documentación) están
-detalladas en `TASK_CONTEXT.md`. Lo que aún no está implementado en este repositorio:
-
-- Docker Compose del stack completo y CI (I-01).
-- Notificaciones por correo (B-08) y cifrado AES-256-GCM de campos (B-04).
-- Pruebas automatizadas (B-01, B-02, I-03, I-04, I-05).
-- Evaluación con Ragas y benchmark de latencia (A-06).
-- Manual de usuario y documentación final (D-02).
+- Los archivos `.env` y `chroma_db/` están en `.gitignore` (no se suben a GitHub).
+- Se eliminaron los archivos `__pycache__/*.pyc` del índice de git.
+- `backend/.env.example` y `ai-service/.env.example` contienen solo valores placeholder.
+- Las cuentas demo (`ChangeMe123!`) son solo para desarrollo. Cámbialas antes de producción.
+- El sanador (sanitizer) tacha IPs, correos y valores de contraseñas/tokens antes de que el texto llegue al modelo de IA.
+- El backend valida roles en cada endpoint (401/403). El frontend solo es una guardia de UX.

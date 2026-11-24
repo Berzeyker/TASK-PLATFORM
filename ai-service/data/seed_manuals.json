@@ -306,5 +306,161 @@
             "Onboarding de equipo",
             "Configuración inicial del equipo"
         ]
+    },
+    {
+        "article_id": "KB-024",
+        "title": "Windows Update no instala o da error",
+        "category": "Software y Correo",
+        "content": "Si Windows Update no instala actualizaciones o muestra error: 1. Verifique su conexión a internet. 2. Reinicie el equipo e intente de nuevo. 3. Ejecute el solucionador de problemas de Windows Update (Configuración > Sistema > Solucionar problemas > Windows Update). 4. Limpie la caché de Windows Update: abra CMD como administrador y ejecute 'net stop wuauserv', luego 'net stop bits', luego elimine el contenido de C:\\Windows\\SoftwareDistribution\\Download, y finalmente 'net start wuauserv' y 'net start bits'. 5. Si el error persiste con un código específico (ej. 0x80070002), reporte el código exacto al equipo de soporte.",
+        "symptoms": [
+            "Windows Update no funciona",
+            "Las actualizaciones no se instalan",
+            "Error en Windows Update",
+            "Windows no se actualiza",
+            "Código de error en Windows Update"
+        ]
+    },
+    {
+        "article_id": "KB-025",
+        "title": "Antivirus o protección contra amenazas",
+        "category": "Seguridad",
+        "content": "Si su equipo muestra alertas de virus o necesita verificar la protección: 1. Abra Windows Security (Seguridad de Windows) desde el menú Inicio. 2. Vaya a 'Protección contra virus y amenazas' y verifique que la protección en tiempo real esté activada. 3. Ejecute un análisis completo (Análisis completo) si sospecha de malware. 4. Si Windows Defender detectó una amenaza, siga las recomendaciones de cuarentena o eliminación. 5. No instale antivirus de terceros sin autorización del equipo de seguridad. 6. Si el equipo está infectado y no puede limpiarse, reporte el caso para reimaging del equipo.",
+        "symptoms": [
+            "El antivirus detectó un virus",
+            "Windows Defender muestra alerta",
+            "Sospecho de malware en mi equipo",
+            "La protección en tiempo real está desactivada",
+            "Necesito escanear mi computadora"
+        ]
+    },
+    {
+        "article_id": "KB-026",
+        "title": "Respaldo y recuperación de archivos",
+        "category": "Software y Correo",
+        "content": "Si necesita recuperar archivos eliminados o hacer un respaldo: 1. Verifique la Papelera de reciclaje para archivos eliminados recientemente. 2. Si el archivo estaba en OneDrive, vaya a onedrive.com, inicie sesión y revise la Papelera de OneDrive (se conservan 30 días). 3. Para respaldos automáticos, asegúrese de que OneDrive esté sincronizando sus carpetas (Documentos, Escritorio, Imágenes). 4. Para recuperar versiones anteriores de un archivo, haga clic derecho > 'Versiones anteriores' (si está habilitado). 5. Si necesita un respaldo completo del equipo, contacte al equipo de soporte para configurar la solución de backup institucional.",
+        "symptoms": [
+            "Eliminé un archivo por error",
+            "Necesito recuperar un documento",
+            "Perdí mis archivos",
+            "Cómo hago respaldo de mis datos",
+            "Restaurar archivo de OneDrive"
+        ]
+    },
+    {
+        "article_id": "KB-027",
+        "title": "Configuración de firma de correo electrónico",
+        "category": "Software y Correo",
+        "content": "Para configurar o actualizar su firma de correo en Outlook: 1. Abra Outlook y vaya a Archivo > Opciones > Correo. 2. Clic en 'Firmas...' y luego 'Nuevo'. 3. Escriba un nombre para la firma y diseñe el contenido (nombre, cargo, teléfono, correo). 4. En 'Elegir firma predeterminada', seleccione la firma para mensajes nuevos y para respuestas/reenvíos. 5. Clic en 'Aceptar'. 6. Si la firma institucional es obligatoria, use la plantilla proporcionada por Comunicaciones; no modifique el formato corporativo.",
+        "symptoms": [
+            "Cómo configuro mi firma de correo",
+            "Mi firma de Outlook no aparece",
+            "Necesito cambiar mi firma de email",
+            "La firma no se agrega automáticamente",
+            "Configurar firma corporativa"
+        ]
+    },
+    {
+        "article_id": "KB-028",
+        "title": "Problemas con calendario o reuniones en Outlook/Teams",
+        "category": "Software y Correo",
+        "content": "Si su calendario no sincroniza o las reuniones de Teams no aparecen: 1. Verifique que esté conectado a internet y que Outlook esté en línea (no en modo 'Trabajar sin conexión'). 2. Cierre y vuelva a abrir Outlook. 3. Si las reuniones de Teams no se crean automáticamente, verifique que el complemento de Teams esté habilitado en Outlook (Archivo > Opciones > Complementos). 4. Para aceptar/rechazar invitaciones, asegúrese de que la respuesta se envíe correctamente. 5. Si el calendario compartido no actualiza, cierre y vuelva a abrir el calendario compartido. 6. Si el problema persiste, reporte el error exacto y el correo del organizador.",
+        "symptoms": [
+            "El calendario no sincroniza",
+            "Las reuniones de Teams no aparecen",
+            "No puedo ver el calendario compartido",
+            "Las invitaciones no llegan",
+            "Outlook no muestra mis reuniones"
+        ]
+    },
+    {
+        "article_id": "KB-029",
+        "title": "Configuración de VPN desde casa",
+        "category": "Redes",
+        "content": "Para configurar la VPN corporativa en su equipo personal o de trabajo desde casa: 1. Descargue el cliente VPN desde el portal de TI o el enlace proporcionado por soporte. 2. Instale el cliente siguiendo el asistente. 3. Abra el cliente e ingrese su usuario corporativo y contraseña. 4. Si se le solicita, apruebe la notificación MFA en Microsoft Authenticator. 5. Una vez conectado, verifique que pueda acceder a recursos internos (correo, carpetas de red, intranet). 6. Si la conexión falla, verifique su internet local y que no haya un firewall bloqueando los puertos. 7. Para desconectar, use el botón 'Desconectar' del cliente VPN.",
+        "symptoms": [
+            "Cómo configuro la VPN",
+            "Necesito conectarme a la VPN desde casa",
+            "Instalar cliente VPN",
+            "VPN no conecta desde mi casa",
+            "Configurar acceso remoto"
+        ]
+    },
+    {
+        "article_id": "KB-030",
+        "title": "Solicitud de acceso a sistemas o aplicaciones",
+        "category": "Cuentas y Accesos",
+        "content": "Si necesita acceso a un sistema, aplicación o recurso al que no tiene permisos: 1. Verifique si el acceso está disponible en el Centro de Software o en el catálogo de aplicaciones. 2. Si no está disponible, cree un ticket en la categoría 'Cuentas y Accesos' indicando: nombre del sistema, tipo de acceso requerido (lectura, escritura, admin), justificación de negocio, y aprobación de su jefe directo. 3. El equipo de TI evaluará la solicitud según las políticas de seguridad. 4. Tiempos de respuesta: accesos estándar 1-2 días hábiles, accesos especiales hasta 5 días. 5. No comparta credenciales ni solicite acceso a nombre de otra persona.",
+        "symptoms": [
+            "Necesito acceso a un sistema",
+            "No tengo permisos para una aplicación",
+            "Solicitar acceso a una carpeta",
+            "Necesito permisos de administrador",
+            "Cómo solicito acceso a un recurso"
+        ]
+    },
+    {
+        "article_id": "KB-031",
+        "title": "Cambio o devolución de equipo",
+        "category": "Hardware e Impresión",
+        "content": "Si necesita cambiar o devolver un equipo (laptop, monitor, periféricos): 1. Reporte el motivo (falla, obsolescencia, cambio de rol) creando un ticket en la categoría Hardware. 2. Incluya el número de inventario del equipo actual y el motivo del cambio. 3. El equipo de TI evaluará si procede reparación o reemplazo. 4. Para devoluciones (baja, cambio de área), entregue el equipo completo con cargador y accesorios en la oficina de TI. 5. Se generará un acta de entrega/devolución que debe firmar. 6. Los equipos dañados por mal uso pueden generar un cargo según la política de activos.",
+        "symptoms": [
+            "Necesito cambiar mi laptop",
+            "Mi equipo está obsoleto",
+            "Quiero devolver un equipo",
+            "Cambio de equipo por cambio de área",
+            "Mi monitor está dañado"
+        ]
+    },
+    {
+        "article_id": "KB-032",
+        "title": "Problemas con la batería o cargador del laptop",
+        "category": "Hardware e Impresión",
+        "content": "Si la batería de su laptop no carga o el cargador no funciona: 1. Verifique que el cargador esté bien conectado al equipo y a la toma de corriente. 2. Pruebe otra toma de corriente. 3. Si el indicador de carga no se enciende, pruebe otro cargador compatible. 4. Revise en Windows (Configuración > Sistema > Batería) el estado de la batería y el porcentaje de desgaste. 5. Si la batería no mantiene carga (dura menos de 30 minutos), reporte el equipo para evaluación de reemplazo. 6. No use cargadores no originales, ya que pueden dañar la batería. 7. Si el equipo no enciende ni con cargador conectado, reporte como falla de hardware.",
+        "symptoms": [
+            "La batería no carga",
+            "El cargador no funciona",
+            "La laptop solo funciona con cargador",
+            "La batería dura muy poco",
+            "El indicador de carga no se enciende"
+        ]
+    },
+    {
+        "article_id": "KB-033",
+        "title": "Impresora no instalada o no aparece en la lista",
+        "category": "Hardware e Impresión",
+        "content": "Si necesita instalar una impresora de red o no aparece en la lista: 1. Verifique que esté conectado a la red corporativa. 2. En Windows, vaya a Configuración > Bluetooth y dispositivos > Impresoras y escáneres > Agregar dispositivo. 3. Si la impresora no aparece automáticamente, haga clic en 'La impresora que quiero no está en la lista' y seleccione 'Seleccionar una impresora compartida por nombre' e ingrese \\\\servidor\\nombreimpresora. 4. Si no conoce el nombre, consulte la lista de impresoras por piso en el portal de TI. 5. Si el controlador no se instala automáticamente, descárguelo del fabricante. 6. Si el problema persiste, reporte el piso y la impresora que necesita.",
+        "symptoms": [
+            "No puedo instalar la impresora",
+            "La impresora no aparece en la lista",
+            "Necesito agregar una impresora de red",
+            "No encuentro la impresora del piso",
+            "Instalar impresora compartida"
+        ]
+    },
+    {
+        "article_id": "KB-034",
+        "title": "Problemas con el correo web (Outlook en navegador)",
+        "category": "Software y Correo",
+        "content": "Si Outlook en el navegador (OWA) no carga o tiene problemas: 1. Verifique su conexión a internet. 2. Limpie la caché y cookies del navegador. 3. Intente en modo incógnito o con otro navegador. 4. Verifique que esté usando la URL correcta (outlook.office.com o mail.empresa.com). 5. Si aparece 'No se puede acceder', puede ser un problema de licencia o cuenta bloqueada. 6. Si el problema persiste solo en un navegador, actualice el navegador o reinstale. 7. Para problemas persistentes, use la aplicación de escritorio de Outlook como alternativa.",
+        "symptoms": [
+            "Outlook web no carga",
+            "El correo en el navegador no funciona",
+            "No puedo abrir mi correo web",
+            "OWA no funciona",
+            "Outlook online da error"
+        ]
+    },
+    {
+        "article_id": "KB-035",
+        "title": "Configuración de correo en celular (Outlook mobile)",
+        "category": "Software y Correo",
+        "content": "Para configurar el correo corporativo en su teléfono móvil: 1. Descargue la app 'Microsoft Outlook' desde App Store o Google Play. 2. Abra la app y toque 'Agregar cuenta'. 3. Ingrese su correo institucional. 4. Se le redirigirá a la página de autenticación institucional; ingrese su contraseña. 5. Apruebe la notificación MFA en Microsoft Authenticator. 6. La cuenta se configurará automáticamente. 7. Si usa otra app de correo (no recomendado), configure manualmente con servidor IMAP/Exchange. 8. Para problemas, verifique que la app esté actualizada y que tenga conexión a internet.",
+        "symptoms": [
+            "Cómo configuro el correo en mi celular",
+            "Outlook mobile no funciona",
+            "No puedo ver mi correo en el teléfono",
+            "Configurar email en Android o iPhone",
+            "El correo no llega al celular"
+        ]
     }
 ]
