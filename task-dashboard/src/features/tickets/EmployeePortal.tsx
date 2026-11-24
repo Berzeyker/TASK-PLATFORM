@@ -183,7 +183,14 @@ export function EmployeePortal() {
     setIsLoading(false)
   }
 
-  const openCount = tickets.filter((ticket) => matchesTicketFilter(ticket, 'OPEN')).length
+  async function handleSelectTicket(ticket: Ticket) {
+    try {
+      const detail = await getTicketDetail(token, ticket.id)
+      setSelectedTicket(detail)
+    } catch {
+      setSelectedTicket(ticket)
+    }
+  }
   const inProgressCount = tickets.filter((ticket) => matchesTicketFilter(ticket, 'IN_PROGRESS')).length
 
   return (
@@ -216,7 +223,7 @@ export function EmployeePortal() {
         )}
 
         <TicketSummary total={tickets.length} open={openCount} inProgress={inProgressCount} />
-        <TicketList tickets={tickets} isLoading={isLoading} onSelect={setSelectedTicket} />
+        <TicketList tickets={tickets} isLoading={isLoading} onSelect={handleSelectTicket} />
       </section>
 
       {isFormOpen && (
