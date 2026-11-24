@@ -1,5 +1,6 @@
 import { NavLink, Outlet, useLocation } from 'react-router'
 import { useAuth } from '../features/auth/auth-context'
+import { NotificationsBell } from '../features/notifications/NotificationsBell'
 import { roleLabels } from '../features/auth/roles'
 import type { UserRole } from '../features/auth/types'
 import './shell.css'
@@ -8,13 +9,14 @@ import './shell.css'
 type NavItem = { to: string; label: string; end?: boolean; also?: string[] }
 
 const navByRole: Record<UserRole, NavItem[]> = {
-  EMPLOYEE: [{ to: '/portal', label: 'Mis tickets' }],
-  AGENT: [{ to: '/queue', label: 'Cola de tickets', also: ['/tickets/'] }],
-  MANAGER: [{ to: '/dashboard', label: 'Métricas' }],
+  EMPLOYEE: [{ to: '/portal', label: 'Mis tickets' }, { to: '/assistant', label: 'Asistente IA' }],
+  AGENT: [{ to: '/queue', label: 'Cola de tickets', also: ['/tickets/'] }, { to: '/assistant', label: 'Asistente IA' }],
+  MANAGER: [{ to: '/dashboard', label: 'Métricas' }, { to: '/assistant', label: 'Asistente IA' }],
   ADMIN: [
     { to: '/admin', label: 'Cola de tickets', end: true },
     { to: '/dashboard', label: 'Métricas' },
     { to: '/admin/users', label: 'Usuarios y categorías' },
+    { to: '/assistant', label: 'Asistente IA' },
   ],
 }
 
@@ -73,7 +75,10 @@ export function AppShell() {
           <span className="breadcrumb">
             {roleLabels[role].toUpperCase()} <span>/</span> {(current?.label ?? 'INICIO').toUpperCase()}
           </span>
-          <span className="service-status"><span /> Sistema operativo</span>
+          <div className="topbar-actions">
+            <NotificationsBell token={session.accessToken} />
+            <span className="service-status"><span /> Sistema operativo</span>
+          </div>
         </header>
         <Outlet />
         <footer className="page-footer">

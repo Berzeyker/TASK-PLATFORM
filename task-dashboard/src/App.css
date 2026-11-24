@@ -1532,3 +1532,41 @@
     width: 100%;
   }
 }
+
+/* Notifications bell (F-04) */
+.notifications-bell { position: relative; }
+.notifications-trigger {
+  position: relative; background: transparent; border: 1px solid var(--border);
+  color: var(--foreground); width: 36px; height: 36px; font-size: 16px;
+  cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+}
+.notifications-badge {
+  position: absolute; top: -6px; right: -6px; min-width: 18px; height: 18px;
+  padding: 0 4px; border-radius: 9px; background: var(--primary); color: #fff;
+  font-size: 10px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center;
+}
+.notifications-dropdown {
+  position: absolute; top: calc(100% + 8px); right: 0; width: 360px;
+  max-height: 480px; overflow-y: auto; background: var(--card); border: 1px solid var(--border);
+  z-index: 100; padding: 12px;
+}
+.notifications-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border);
+}
+.notifications-mark-all {
+  background: transparent; border: none; color: var(--primary); font-size: 10px;
+  cursor: pointer; text-transform: uppercase; letter-spacing: 0.08em;
+}
+.notifications-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.notification-item {
+  padding: 10px 12px; border: 1px solid var(--border); cursor: pointer;
+  display: flex; flex-direction: column; gap: 4px; background: rgba(255,255,255,0.02);
+}
+.notification-unread { border-color: var(--primary); background: rgba(255,107,53,0.06); }
+.notification-message { font-size: 12px; color: var(--foreground); line-height: 1.5; }
+.notification-date { font-size: 10px; color: var(--muted-foreground); }
+.notification-ticket { font-size: 10px; color: var(--primary); font-weight: 600; }
+.notifications-empty { font-size: 12px; color: var(--muted-foreground); padding: 16px 0; text-align: center; }
+.notifications-error { font-size: 11px; color: #ff6b6b; }
+.topbar-actions { display: flex; align-items: center; gap: 16px; }

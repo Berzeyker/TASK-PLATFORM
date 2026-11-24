@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router'
 import { AdminDashboard } from '../features/admin/AdminDashboard'
 import { UsersCategoriesPage } from '../features/admin/UsersCategoriesPage'
+import { AssistantPage } from '../features/ai-assistant/AssistantPage'
 import { LoginRoute } from '../features/auth/LoginRoute'
 import { allRoles } from '../features/auth/roles'
 import { ManagerDashboard } from '../features/dashboard/ManagerDashboard'
@@ -23,6 +24,7 @@ export const router = createBrowserRouter([
           {
             element: <AppShell />,
             children: [
+              { path: '/assistant', element: <AssistantPage /> },
               { element: <RequireRole roles={['EMPLOYEE']} />, children: [{ path: '/portal', element: <EmployeePortal /> }] },
               {
                 // PUT /tickets/:id is allowed for agents and admins only
