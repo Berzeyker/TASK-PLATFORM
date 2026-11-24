@@ -177,6 +177,11 @@ export function EmployeePortal() {
     }
   }
 
+  async function handleResolvedByAi() {
+    setIsFormOpen(false)
+    await reload('Intenta recargarla.')
+  }
+
   async function retryLoading() {
     setIsLoading(true)
     await reload('No se pudieron cargar tus solicitudes.')
@@ -230,10 +235,12 @@ export function EmployeePortal() {
       {isFormOpen && (
         <TicketFormModal
           categories={categories}
+          token={token}
           error={formError}
           isSubmitting={isSubmitting}
           onClose={() => setIsFormOpen(false)}
           onSubmit={handleCreateTicket}
+          onResolvedByAi={() => void handleResolvedByAi()}
         />
       )}
       {selectedTicket && (

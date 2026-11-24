@@ -1,21 +1,31 @@
-import type { FormEvent } from 'react'
+import { useState, type FormEvent } from 'react'
 import type { Category } from './types'
+import { AiDeflectionWidget } from '../ai-assistant/AiDeflectionWidget'
 
 type TicketFormModalProps = {
   categories: Category[]
+  token: string
   error: string
   isSubmitting: boolean
   onClose: () => void
   onSubmit: (event: FormEvent<HTMLFormElement>) => void
+  onResolvedByAi: () => void
 }
 
 export function TicketFormModal({
   categories,
+  token,
   error,
   isSubmitting,
   onClose,
   onSubmit,
+  onResolvedByAi,
 }: TicketFormModalProps) {
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [aiDismissed, setAiDismissed] = useState(false)
+
+  // Reset dismissed state when inputs change significantly
   return (
     <div className="modal-backdrop" onMouseDown={(event) => {
       if (event.target === event.currentTarget) onClose()
@@ -32,7 +42,16 @@ export function TicketFormModal({
         <form className="ticket-form" onSubmit={onSubmit}>
           <label>
             <span>ASUNTO</span>
-            <input name="title" type="text" minLength={5} maxLength={150} placeholder="Ej. No puedo acceder a mi correo" required />
+            <input
+              name="title"
+              type="text"
+              minLength={5}
+              maxLength={150}
+              placeholder="Ej. No puedo acceder a mi correo"
+              required
+              value={title}
+              onChange={(e) => { setTitle(e.target.value); setAiDismissed(false) }}
+            />
           </label>
           <label>
             <span>CATEGORÍA</span>
@@ -45,7 +64,15 @@ export function TicketFormModal({
           </label>
           <label>
             <span>DESCRIPCIÓN</span>
-            <textarea name="description" minLength={10} rows={4} placeholder="Describe el problema y qué estabas intentando hacer…" required />
+            <textarea
+              name="description"
+              minLength={10}
+              rows={4}
+              placeholder="Describe el problema y qué estabas intentando hacer…"
+              required
+              value={description}
+              onChange={(e) => { setDescription(e.target.value); setAiDismissed(false) }}
+            />
           </label>
           <label>
             <span>DISPOSITIVO <small>OPCIONAL</small></span>
@@ -65,6 +92,17 @@ export function TicketFormModal({
             />
             <small className="form-hint">Formatos permitidos: PDF, PNG, JPG, TXT.</small>
           </label>
+
+          {!aiDismissed && (
+            <AiDeflectionWidget
+              title={title}
+              description={description}
+              token={token}
+              onResolved={() => { setAiDismissed(true); onResolvedByAi() }}
+              onNotResolved={() => setAiDismissed(true)}
+            />
+          )}
+
           <div className="form-actions">
             <button className="secondary-action" type="button" onClick={onClose} disabled={isSubmitting}>Cancelar</button>
             <button className="primary-action" type="submit" disabled={isSubmitting}>
