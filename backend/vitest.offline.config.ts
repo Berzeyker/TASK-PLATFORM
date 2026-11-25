@@ -6,8 +6,8 @@ import { defineConfig } from 'vitest/config';
 // Good for fast feedback on route logic; it does NOT replace `npm test`.
 export default defineConfig({
   test: {
-    include: ['src/tests/**/*.test.ts'],
-    setupFiles: ['src/tests/support/offlineSetup.ts'],
+    include: ['tests/**/*.test.ts'],
+    setupFiles: ['tests/support/offlineSetup.ts'],
     env: {
       DATABASE_URL: 'postgresql://offline:offline@localhost:5432/offline',
       DIRECT_URL: 'postgresql://offline:offline@localhost:5432/offline',

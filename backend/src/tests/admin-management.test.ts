@@ -35,7 +35,7 @@ const { db, fake } = vi.hoisted(() => {
   return { db, fake }
 })
 
-vi.mock('../prisma', () => ({ prisma: fake }))
+vi.mock('../src/prisma', () => ({ prisma: fake }))
 
 import { app } from '../app'
 
