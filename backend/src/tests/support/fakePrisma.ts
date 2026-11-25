@@ -19,12 +19,13 @@ function matches(row: Row, where: Row = {}): boolean {
   return Object.entries(where).every(([key, cond]) => {
     if (cond === undefined) return true;
     if (isPlainObject(cond)) {
-      if ('in' in cond) return cond.in.includes(row[key]);
-      if ('not' in cond) return row[key] !== cond.not;
-      if ('gte' in cond && !(row[key] >= cond.gte)) return false;
-      if ('lte' in cond && !(row[key] <= cond.lte)) return false;
-      if ('gt' in cond && !(row[key] > cond.gt)) return false;
-      if ('lt' in cond && !(row[key] < cond.lt)) return false;
+      // like Prisma, an operator whose value is undefined is simply not applied
+      if (cond.in !== undefined && !cond.in.includes(row[key])) return false;
+      if (cond.not !== undefined && row[key] === cond.not) return false;
+      if (cond.gte !== undefined && !(row[key] >= cond.gte)) return false;
+      if (cond.lte !== undefined && !(row[key] <= cond.lte)) return false;
+      if (cond.gt !== undefined && !(row[key] > cond.gt)) return false;
+      if (cond.lt !== undefined && !(row[key] < cond.lt)) return false;
       return true;
     }
     return row[key] === cond;

@@ -10,6 +10,7 @@ import { authenticate, requireRole } from '../middleware/auth';
 import { asyncGuard, asyncHandler, HttpError } from '../utils/http';
 import { config } from '../config';
 import { newTicketId } from '../utils/ticketId';
+import { audit, AuditAction } from '../utils/audit';
 
 export const ticketsRouter = Router();
 ticketsRouter.use(authenticate);
@@ -43,7 +44,7 @@ ticketsRouter.post('/', requireRole('EMPLOYEE'), asyncHandler(async (req, res) =
   if (!category) throw new HttpError(400, 'Invalid category');
   const ticket = await prisma.$transaction(async (tx) => {
     const t = await tx.ticket.create({ data: { ...b, id: newTicketId(), requesterId: req.user!.id } });
-    await tx.auditLog.create({ data: { ticketId: t.id, actorId: req.user!.id, action: 'TICKET_CREATED', newValue: { status: t.status } } });
+    await audit(tx, { ticketId: t.id, actorId: req.user!.id, action: AuditAction.TICKET_CREATED, newValue: { status: t.status } });
     return t;
   });
   res.status(201).json(ticket);
@@ -127,11 +128,11 @@ ticketsRouter.put('/:id', requireRole('AGENT', 'ADMIN'), asyncHandler(async (req
 
   const updated = await prisma.$transaction(async (tx) => {
     const u = await tx.ticket.update({ where: { id: t.id }, data });
-    await tx.auditLog.create({ data: {
-      ticketId: t.id, actorId: req.user!.id, action: next ? 'STATUS_CHANGED' : 'TICKET_UPDATED',
+    await audit(tx, {
+      ticketId: t.id, actorId: req.user!.id, action: next ? AuditAction.STATUS_CHANGED : AuditAction.TICKET_UPDATED,
       oldValue: { status: t.status, priority: t.priority, categoryId: t.categoryId, assignedAgentId: t.assignedAgentId },
       newValue: { status: u.status, priority: u.priority, categoryId: u.categoryId, assignedAgentId: u.assignedAgentId },
-    } });
+    });
     if (next) await tx.notification.create({ data: { userId: t.requesterId, ticketId: t.id, message: `Ticket ${t.id} is now ${u.status}` } }); // FR-17
     return u;
   });
@@ -144,7 +145,15 @@ ticketsRouter.put('/:id/rating', requireRole('EMPLOYEE'), asyncHandler(async (re
   const t = await prisma.ticket.findUnique({ where: { id: req.params.id } });
   if (!t || t.requesterId !== req.user!.id) throw new HttpError(404, 'Ticket not found');
   if (t.status !== 'CLOSED') throw new HttpError(409, 'Only closed tickets can be rated');
-  res.json(await prisma.ticket.update({ where: { id: t.id }, data: { satisfactionRating: rating } }));
+  const rated = await prisma.$transaction(async (tx) => {
+    const u = await tx.ticket.update({ where: { id: t.id }, data: { satisfactionRating: rating } });
+    await audit(tx, {
+      ticketId: t.id, actorId: req.user!.id, action: AuditAction.TICKET_RATED,
+      oldValue: { rating: t.satisfactionRating }, newValue: { rating },
+    });
+    return u;
+  });
+  res.json(rated);
 }));
 
 // ---------- FR-02: attachments ----------
@@ -196,7 +205,7 @@ ticketsRouter.post('/:id/attachments', canAttach, upload.array('files', 5), asyn
         sizeBytes: f.size, storagePath: f.filename, uploadedBy: req.user!.id,
       } }));
     }
-    await tx.auditLog.create({ data: { ticketId: req.params.id, actorId: req.user!.id, action: 'ATTACHMENT_ADDED', newValue: { files: rows.map((r) => r.fileName) } } });
+    await audit(tx, { ticketId: req.params.id, actorId: req.user!.id, action: AuditAction.ATTACHMENT_ADDED, newValue: { files: rows.map((r) => r.fileName) } });
     return rows;
   });
   res.status(201).json(created.map(({ id, fileName, mimeType, sizeBytes }) => ({ id, fileName, mimeType, sizeBytes })));
@@ -217,7 +226,12 @@ ticketsRouter.post('/:id/convert-to-kb', requireRole('AGENT', 'ADMIN'), asyncHan
       categoryId: t.categoryId, sourceTicketId: t.id, authorId: req.user!.id,
       visibilityRole: 'AGENT', // internal until a reviewer decides who may see it
     } });
-    await tx.auditLog.create({ data: { ticketId: t.id, actorId: req.user!.id, action: 'CONVERTED_TO_KB', newValue: { articleId: a.id } } });
+    await audit(tx, { ticketId: t.id, actorId: req.user!.id, action: AuditAction.CONVERTED_TO_KB, newValue: { articleId: a.id } });
+    // the article's own history starts here too (its trail is not tied to a ticket)
+    await audit(tx, {
+      actorId: req.user!.id, action: AuditAction.KB_ARTICLE_CREATED,
+      newValue: { articleId: a.id, title: a.title, status: a.status, categoryId: a.categoryId, visibilityRole: a.visibilityRole, sourceTicketId: t.id },
+    });
     return a;
   });
   res.status(201).json(article);

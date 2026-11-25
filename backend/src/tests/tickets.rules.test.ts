@@ -410,8 +410,9 @@ describe('audit log and notifications (NFR-12, FR-17)', () => {
       ['STATUS_CHANGED', a.agent.id],
       ['STATUS_CHANGED', a.agent.id],
       ['STATUS_CHANGED', a.admin.id],
+      ['TICKET_RATED', a.employee.id],
     ]);
-    const statuses = log.slice(1).map((l) => (l.newValue as { status: string }).status);
+    const statuses = log.slice(1, 5).map((l) => (l.newValue as { status: string }).status);
     expect(statuses).toEqual(['ASSIGNED', 'IN_PROGRESS', 'RESOLVED', 'CLOSED']);
     expect((await notificationsFor(id)).map((n) => n.message.split(' ').pop())).toEqual(['ASSIGNED', 'IN_PROGRESS', 'RESOLVED', 'CLOSED']);
     expect(await getTicket(id)).toMatchObject({ status: 'CLOSED', priority: 'HIGH', satisfactionRating: 5 });

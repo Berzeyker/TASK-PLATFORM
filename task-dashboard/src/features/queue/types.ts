@@ -37,6 +37,7 @@ export type AuditSnapshot = {
   assignedAgentId?: number | null
   files?: string[]
   articleId?: number
+  rating?: number | null
 }
 
 export type TimelineEntry = {

@@ -64,7 +64,7 @@ every move out of `CLOSED` before the transition table is consulted.
 
 | File | Covers |
 |---|---|
-| `security.rbac.test.ts` | A **permission matrix over every route x every role + anonymous** (28 routes x 5 principals = 140 cases). A completeness test compares it with the routes Express actually registers, so adding a route without a matrix entry fails the build. Plus: employees reaching each other's notifications, mass assignment (ticket, user, KB article), and the KB review workflow (author cannot approve their own article, only reviewers publish, employees see only published employee-visible articles). |
+| `security.rbac.test.ts` | A **permission matrix over every route x every role + anonymous** (29 routes x 5 principals = 145 cases). A completeness test compares it with the routes Express actually registers, so adding a route without a matrix entry fails the build. Plus: employees reaching each other's notifications, mass assignment (ticket, user, KB article), and the KB review workflow (author cannot approve their own article, only reviewers publish, employees see only published employee-visible articles). |
 | `security.auth.test.ts` | Missing, malformed, expired, wrong-secret, tampered, `alg:none`, wrong-algorithm and bad-subject tokens (401). **Revocation**: a deactivated user, a demotion and a promotion apply at once to tokens already issued. Login: generic error for unknown / wrong / inactive (no user enumeration), payload validation, 15-minute tokens. Hardening: headers, CORS, malformed JSON, 1 MB body limit. **No response leaks a password hash** (scans 16 endpoints for the field name, the bcrypt pattern and every stored hash). |
 | `security.lockout.test.ts` | 5 failures lock for 15 minutes (even the right password gets 429), a success resets the counter, lock is per account, expiry restores access. |
 | `security.ratelimit.test.ts` | The 31st login in 15 minutes gets 429. |
@@ -80,16 +80,27 @@ every move out of `CLOSED` before the transition table is consulted.
 - Malformed JSON now returns 400 and an oversized body 413 (both used to be 500).
 - Attachment responses no longer include `storagePath` (the server-side file name) or internal user ids.
 
-### Findings left open (decide when convenient)
+### Findings (status after B-03)
 
-1. **Login timing**: an unknown email skips bcrypt, so it answers faster than a wrong password. Compare against a dummy hash to even it out.
-2. **Lockout is a denial-of-service lever**: anyone who knows an email can lock that account for 15 minutes. After the lock expires `failedLoginCount` is still 5, so one wrong guess re-locks it.
+1. ~~**Login timing**~~ **Fixed in B-03.** Unknown and inactive accounts are compared against a dummy bcrypt hash, so they cost the same as a wrong password.
+2. **Lockout is a denial-of-service lever**: anyone who knows an email can lock that account for 15 minutes. **Partly addressed in B-03:** a lock that has expired now starts a fresh count (one wrong guess no longer re-locks it), and every lockout is logged (`ACCOUNT_LOCKED`) and visible at `GET /admin/audit?action=ACCOUNT_LOCKED`. The lever itself remains; fixing it needs per-IP+email throttling or a different policy. A locked account also still answers 429 where an unknown email answers 401, which reveals that the account exists.
 3. **The rate limiter is per client IP**. Behind a reverse proxy (Render, Railway, nginx) every user shares the proxy's IP until `app.set('trust proxy', ...)` is configured: an I-01 deployment item.
 4. **Managers can upload attachments to any ticket** (`isStaff` includes MANAGER). Probably unintended; the matrix documents the current behaviour.
 5. **Existence probing**: `GET /tickets/:id` answers 403 for someone else's ticket and 404 for a missing one (B-01 requires the 403), and attachment ids are sequential. Ticket ids are random; attachment ids are not.
 6. `JWT_SECRET` strength is not enforced (consider a minimum length outside development).
 7. The plain-text upload check only inspects the first 1 KB for NUL bytes.
 8. Unknown routes return Express's default HTML 404 rather than JSON.
+
+## What B-03 covers (`audit.*.test.ts`, see `../AUDIT.md`)
+
+| File | Covers |
+|---|---|
+| `audit.trail.test.ts` | Each ticket action (create, update, status, upload, rating, convert) writes **exactly one** row with the right actor and before/after; requests that fail write none. **A full ticket story is reconstructed** from `GET /admin/audit` (who did what, in order, including a reassignment between two agents). A ticket's timeline never contains non-ticket events; employees see roles, not names. KB: creation, edits (what changed, never the body; a no-op edit writes nothing), every lifecycle transition with the reviewer, refused transitions write nothing. Admin changes are logged without passwords or hashes. The viewer: filters, paging, newest first, validation (400), admin only. |
+| `audit.login.test.ts` | Successful logins; failed logins for unknown email / wrong password / inactive account with a null actor, the lower-cased attempted email and a reason (the response stays generic); lockout (one `ACCOUNT_LOCKED` system event, later attempts logged as `locked`); a fresh count after a lock expires; malformed requests are not logged; a dummy hash is compared for unknown/inactive accounts; no password, hash or token appears in any audit row. |
+
+30 deliberately planted bugs in the audit code (dropped events, wrong actor, leaked password, missing system flag, removed timing equaliser, wrong "from" status, body copied into the log, and so on) were each caught.
+
+Not testable offline: that a failing audit insert rolls the whole change back. That is Prisma's transaction guarantee, and the fake has no rollback.
 
 ## Limits
 

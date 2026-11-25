@@ -5,7 +5,7 @@ import { Prisma, Role } from '@prisma/client';
 import { prisma } from '../prisma';
 import { authenticate, requireRole } from '../middleware/auth';
 import { asyncHandler, HttpError } from '../utils/http';
-import { audit } from '../utils/audit';
+import { audit, AuditAction } from '../utils/audit';
 
 const idParam = (value: string) => z.coerce.number().int().positive().parse(value);
 const atLeastOne = (o: object) => Object.keys(o).length > 0;
@@ -27,7 +27,7 @@ categoriesRouter.post('/', requireRole('ADMIN'), asyncHandler(async (req, res) =
   const created = await prisma.$transaction(async (tx) => {
     if (await tx.category.findUnique({ where: { name } })) throw new HttpError(409, 'A category with that name already exists.');
     const c = await tx.category.create({ data: { name } });
-    await audit(tx, { actorId: req.user!.id, action: 'CATEGORY_CREATED', newValue: { categoryId: c.id, name: c.name } });
+    await audit(tx, { actorId: req.user!.id, action: AuditAction.CATEGORY_CREATED, newValue: { categoryId: c.id, name: c.name } });
     return c;
   });
   res.status(201).json(created);
@@ -47,7 +47,7 @@ categoriesRouter.put('/:id', requireRole('ADMIN'), asyncHandler(async (req, res)
       throw new HttpError(409, 'A category with that name already exists.');
     const c = await tx.category.update({ where: { id }, data: b });
     await audit(tx, {
-      actorId: req.user!.id, action: 'CATEGORY_UPDATED',
+      actorId: req.user!.id, action: AuditAction.CATEGORY_UPDATED,
       oldValue: { categoryId: id, name: before.name, isActive: before.isActive },
       newValue: { categoryId: id, name: c.name, isActive: c.isActive },
     });
@@ -74,7 +74,7 @@ adminRouter.post('/users', asyncHandler(async (req, res) => {
   const u = await prisma.$transaction(async (tx) => {
     if (await tx.user.findUnique({ where: { email: b.email } })) throw new HttpError(409, 'Email already registered');
     const created = await tx.user.create({ data: { email: b.email, fullName: b.fullName, role: b.role, passwordHash } });
-    await audit(tx, { actorId: req.user!.id, action: 'USER_CREATED', newValue: { userId: created.id, email: created.email, role: created.role } });
+    await audit(tx, { actorId: req.user!.id, action: AuditAction.USER_CREATED, newValue: { userId: created.id, email: created.email, role: created.role } });
     return created;
   });
   res.status(201).json({ id: u.id, email: u.email, fullName: u.fullName, role: u.role });
@@ -108,11 +108,38 @@ adminRouter.put('/users/:id', asyncHandler(async (req, res) => {
     if (passwordHash) Object.assign(data, { passwordHash, failedLoginCount: 0, lockedUntil: null });
     const u = await tx.user.update({ where: { id }, data, select: publicUser });
     await audit(tx, {
-      actorId, action: 'USER_UPDATED',
+      actorId, action: AuditAction.USER_UPDATED,
       oldValue: { userId: id, fullName: before.fullName, role: before.role, isActive: before.isActive },
       newValue: { userId: id, fullName: u.fullName, role: u.role, isActive: u.isActive, ...(passwordHash ? { passwordReset: true } : {}) },
     });
     return u;
   }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
   res.json(updated);
+}));
+
+// B-03: read the audit trail (NFR-12). Admin only: rows hold emails of failed login attempts and who changed what.
+adminRouter.get('/audit', asyncHandler(async (req, res) => {
+  const actions = Object.values(AuditAction) as [string, ...string[]];
+  const q = z.object({
+    action: z.enum(actions).optional(),
+    actorId: z.coerce.number().int().positive().optional(),
+    ticketId: z.string().max(40).optional(),
+    from: z.coerce.date().optional(),
+    to: z.coerce.date().optional(),
+    page: z.coerce.number().int().min(1).default(1),
+    pageSize: z.coerce.number().int().min(1).max(100).default(50),
+  }).parse(req.query);
+  if (q.from && q.to && q.from > q.to) throw new HttpError(400, 'Invalid date range');
+
+  const where: Prisma.AuditLogWhereInput = {
+    action: q.action, actorId: q.actorId, ticketId: q.ticketId,
+    ...(q.from || q.to ? { createdAt: { gte: q.from, lte: q.to } } : {}),
+  };
+  const [rows, total] = await Promise.all([
+    prisma.auditLog.findMany({ where, orderBy: [{ createdAt: 'desc' }, { id: 'desc' }], skip: (q.page - 1) * q.pageSize, take: q.pageSize }),
+    prisma.auditLog.count({ where }),
+  ]);
+  const actorIds = [...new Set(rows.map((r) => r.actorId).filter((id): id is number => id !== null))];
+  const actors = actorIds.length ? await prisma.user.findMany({ where: { id: { in: actorIds } }, select: { id: true, fullName: true, role: true } }) : [];
+  res.json({ items: rows.map((r) => ({ ...r, actor: actors.find((a) => a.id === r.actorId) ?? null })), total, page: q.page, pageSize: q.pageSize });
 }));

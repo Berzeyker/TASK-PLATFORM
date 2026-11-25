@@ -43,6 +43,7 @@ const MATRIX: Route[] = [
   { key: 'PUT /api/v1/categories/:p', path: (f) => `/api/v1/categories/${f.categoryId}`, allowed: ['ADMIN'], body: {} },
 
   { key: 'GET /api/v1/admin/users', path: () => '/api/v1/admin/users', allowed: ['ADMIN'] },
+  { key: 'GET /api/v1/admin/audit', path: () => '/api/v1/admin/audit', allowed: ['ADMIN'] },
   { key: 'POST /api/v1/admin/users', path: () => '/api/v1/admin/users', allowed: ['ADMIN'], body: {} },
   { key: 'PUT /api/v1/admin/users/:p', path: (f) => `/api/v1/admin/users/${f.userId}`, allowed: ['ADMIN'], body: {} },
   { key: 'GET /api/v1/users', path: () => '/api/v1/users', allowed: STAFF },

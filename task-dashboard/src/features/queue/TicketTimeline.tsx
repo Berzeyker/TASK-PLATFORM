@@ -48,6 +48,8 @@ function describe(entry: TimelineEntry, lookups: Lookups): string[] {
     }
     case 'ATTACHMENT_ADDED':
       return [`Archivos adjuntados: ${(entry.newValue?.files ?? []).join(', ') || '—'}`]
+    case 'TICKET_RATED':
+      return [`Calificación del solicitante: ${entry.newValue?.rating ?? '?'} / 5`]
     case 'CONVERTED_TO_KB':
       return [`Convertido en borrador de la base de conocimiento (artículo #${entry.newValue?.articleId ?? '?'})`]
     default:
