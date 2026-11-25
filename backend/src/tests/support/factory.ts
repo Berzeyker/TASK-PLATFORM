@@ -76,3 +76,28 @@ export async function makeTicket(a: Actors, o: TicketSeed = {}) {
 export const getTicket = (id: string) => prisma.ticket.findUniqueOrThrow({ where: { id } });
 export const auditFor = (ticketId: string) => prisma.auditLog.findMany({ where: { ticketId }, orderBy: { id: 'asc' } });
 export const notificationsFor = (ticketId: string) => prisma.notification.findMany({ where: { ticketId }, orderBy: { id: 'asc' } });
+
+// ---------- B-02 helpers ----------
+import bcrypt from 'bcryptjs';
+
+export const TEST_PASSWORD = 'Correct-Horse-12';
+
+/** A fresh user with a REAL bcrypt hash (cost 4: fast) so login can be exercised. */
+export async function makeUser(role: Role, o: Partial<{ isActive: boolean; password: string; passwordHash: string }> = {}): Promise<User> {
+  return prisma.user.create({
+    data: {
+      email: `${role.toLowerCase()}-${uniq()}@task.test`,
+      fullName: `${role} ${uniq()}`,
+      role,
+      isActive: o.isActive ?? true,
+      passwordHash: o.passwordHash ?? (await bcrypt.hash(o.password ?? TEST_PASSWORD, 4)),
+    },
+  });
+}
+
+/** Signs an arbitrary token, for forging expired / wrong-secret / odd-claim tokens. */
+export const signRaw = (claims: Record<string, unknown>, secret: string = config.jwtSecret, options: jwt.SignOptions = {}) =>
+  jwt.sign(claims, secret, options);
+
+export const bearer = (token: string) => `Bearer ${token}`;
+export const b64url = (v: unknown) => Buffer.from(JSON.stringify(v)).toString('base64url');

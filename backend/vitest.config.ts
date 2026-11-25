@@ -1,14 +1,14 @@
 import os from 'os';
 import path from 'path';
 import { defineConfig } from 'vitest/config';
-import { loadTestEnv } from './tests/support/testEnv';
+import { loadTestEnv } from './src/tests/support/testEnv';
 
 // `npm test`: runs against a real, separate Postgres (a Neon test branch). loadTestEnv() aborts the run
 // if the test DB is missing or is the same database as backend/.env.
 export default defineConfig({
   test: {
-    include: ['tests/**/*.test.ts'],
-    globalSetup: ['tests/support/globalSetup.ts'],
+    include: ['src/tests/**/*.test.ts'],
+    globalSetup: ['src/tests/support/globalSetup.ts'],
     env: {
       ...loadTestEnv(),
       NODE_ENV: 'test',

@@ -21,6 +21,10 @@ export function errorHandler(err: unknown, _req: Request, res: Response, _next: 
   if (err instanceof Prisma.PrismaClientKnownRequestError && err.code === 'P2034')
     return res.status(409).json({ error: 'Conflicting update. Please try again.' });
   if (err instanceof HttpError) return res.status(err.status).json({ error: err.message });
+  // body-parser: malformed JSON (400), body over the size limit (413). These are client errors, not server faults.
+  const e = err as { status?: number; type?: string };
+  if (typeof e?.status === 'number' && e.status >= 400 && e.status < 500 && typeof e.type === 'string')
+    return res.status(e.status).json({ error: e.status === 413 ? 'Request body too large.' : 'Malformed request body.' });
   if (err instanceof multer.MulterError)
     return res.status(400).json({ error: 'Invalid file format or file size exceeds 10MB limit.' });
   console.error(err); // never leak stack traces to clients

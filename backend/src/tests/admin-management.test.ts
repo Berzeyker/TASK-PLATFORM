@@ -87,15 +87,18 @@ describe('PUT /admin/users/:id', () => {
     expect((await put(1, { role: 'AGENT' })).status).toBe(409)
     expect((await put(1, { fullName: 'Renamed Me' })).status).toBe(200) // own name is fine
   })
-  it('cannot remove the last active admin', async () => {
-    const A9 = tok(9, 'ADMIN')
-    db.users.push(row(9, 'ADMIN'))
-    expect((await put(1, { isActive: false }, A9)).status).toBe(200)       // 9 remains
-    const r = await put(9, { role: 'AGENT' }, tok(1, 'ADMIN'))               // 1 is now inactive -> 9 is last
-    expect(r.status).toBe(409); expect(r.body.error).toMatch(/administrator/)
-    expect((await put(1, { isActive: true }, A9)).status).toBe(200)
-    expect((await put(9, { role: 'AGENT' }, A1)).status).toBe(200)          // 1 active again -> allowed
-  })
+  it('a deactivated admin loses access at once, so the acting admin is always active', async () => {
+    // Since B-02 `authenticate` checks the database on every request. That makes "the last admin removed by an
+    // inactive admin" unreachable one request at a time; the serializable last-admin guard in the route now only
+    // matters for two admins removing each other at the same moment (needs a real database to exercise).
+    const A9 = tok(9, 'ADMIN');
+    db.users.push(row(9, 'ADMIN'));
+    expect((await put(1, { isActive: false }, A9)).status).toBe(200); // 9 stays
+    const asDeactivated = await put(9, { role: 'AGENT' }, tok(1, 'ADMIN'));
+    expect(asDeactivated.status).toBe(401); // admin 1's still-unexpired token no longer works
+    expect((await put(1, { isActive: true }, A9)).status).toBe(200);
+    expect((await put(9, { role: 'AGENT' }, A1)).status).toBe(200); // 1 is back, so 9 may be demoted
+  });
   it('inactive admin being demoted does not trip the guard', async () => {
     db.users.push(row(7, 'ADMIN', { isActive: false }))
     expect((await put(7, { role: 'AGENT' })).status).toBe(200)

@@ -25,6 +25,8 @@ const withPeople = {
   requester: { select: { id: true, fullName: true, email: true } },
   assignedAgent: { select: { id: true, fullName: true } },
 } as const;
+// Attachment fields safe to show: never storagePath (the server-side file name) or internal user ids
+const attachmentView = { id: true, fileName: true, mimeType: true, sizeBytes: true } as const;
 const isStaff = (role: string) => role === 'AGENT' || role === 'MANAGER' || role === 'ADMIN';
 const alnum = (s: string) => (s.match(/[a-z0-9]/gi) ?? []).length;
 
@@ -65,7 +67,7 @@ ticketsRouter.get('/', asyncHandler(async (req, res) => {
 ticketsRouter.get('/:id', asyncHandler(async (req, res) => {
   const t = await prisma.ticket.findUnique({
     where: { id: req.params.id },
-    include: { ...withPeople, attachments: true, auditLogs: { orderBy: { createdAt: 'asc' } } },
+    include: { ...withPeople, attachments: { select: attachmentView }, auditLogs: { orderBy: { createdAt: 'asc' } } },
   });
   if (!t) throw new HttpError(404, 'Ticket not found');
   const staff = isStaff(req.user!.role);
@@ -197,7 +199,7 @@ ticketsRouter.post('/:id/attachments', canAttach, upload.array('files', 5), asyn
     await tx.auditLog.create({ data: { ticketId: req.params.id, actorId: req.user!.id, action: 'ATTACHMENT_ADDED', newValue: { files: rows.map((r) => r.fileName) } } });
     return rows;
   });
-  res.status(201).json(created);
+  res.status(201).json(created.map(({ id, fileName, mimeType, sizeBytes }) => ({ id, fileName, mimeType, sizeBytes })));
 }));
 
 // ---------- FR-08 / FR-18: convert a resolution into a draft KB article ----------

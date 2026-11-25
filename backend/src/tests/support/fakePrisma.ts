@@ -6,11 +6,11 @@
 export type Row = Record<string, any>;
 export type FakeDb = {
   users: Row[]; categories: Row[]; tickets: Row[]; attachments: Row[];
-  auditLogs: Row[]; notifications: Row[]; kbArticles: Row[]; seq: Record<string, number>;
+  auditLogs: Row[]; notifications: Row[]; kbArticles: Row[]; aiInteractions: Row[]; seq: Record<string, number>;
 };
 
 export const emptyDb = (): FakeDb => ({
-  users: [], categories: [], tickets: [], attachments: [], auditLogs: [], notifications: [], kbArticles: [], seq: {},
+  users: [], categories: [], tickets: [], attachments: [], auditLogs: [], notifications: [], kbArticles: [], aiInteractions: [], seq: {},
 });
 
 const isPlainObject = (v: unknown): v is Row => !!v && typeof v === 'object' && !(v instanceof Date) && !Array.isArray(v);
@@ -59,7 +59,7 @@ export function createFakePrisma(db: FakeDb = emptyDb()) {
       if (inc.category) o.category = t.categoryId == null ? null : pick(db.categories.find((c) => c.id === t.categoryId), inc.category.select);
       if (inc.requester) o.requester = user(t.requesterId, inc.requester.select);
       if (inc.assignedAgent) o.assignedAgent = user(t.assignedAgentId, inc.assignedAgent.select);
-      if (inc.attachments) o.attachments = db.attachments.filter((a) => a.ticketId === t.id);
+      if (inc.attachments) o.attachments = db.attachments.filter((a) => a.ticketId === t.id).map((x) => pick(x, inc.attachments.select ?? undefined));
       if (inc.auditLogs) o.auditLogs = sortRows(db.auditLogs.filter((a) => a.ticketId === t.id), inc.auditLogs.orderBy);
       return o;
     },
@@ -68,6 +68,11 @@ export function createFakePrisma(db: FakeDb = emptyDb()) {
       if (inc.ticket) o.ticket = pick(db.tickets.find((t) => t.id === a.ticketId), inc.ticket.select);
       return o;
     },
+  };
+
+  // Prisma rejects a non-integer value for an Int column (NaN, 1.5) with a validation error instead of returning nothing
+  const assertValidWhere = (where: Row) => {
+    if (typeof where?.id === 'number' && !Number.isInteger(where.id)) throw new Error('PrismaClientValidationError: Argument `id` must be an Int');
   };
 
   function model(name: keyof FakeDb, defaults: () => Row) {
@@ -85,7 +90,10 @@ export function createFakePrisma(db: FakeDb = emptyDb()) {
         rows().push(row);
         return out(row, args);
       },
-      findUnique: async ({ where, ...args }: Row) => out(rows().find((r) => matches(r, where)), args),
+      findUnique: async ({ where, ...args }: Row) => {
+        assertValidWhere(where);
+        return out(rows().find((r) => matches(r, where)), args);
+      },
       findUniqueOrThrow: async ({ where, ...args }: Row) => {
         const found = out(rows().find((r) => matches(r, where)), args);
         if (!found) throw new Error(`fake prisma: ${String(name)} not found`);
@@ -102,6 +110,11 @@ export function createFakePrisma(db: FakeDb = emptyDb()) {
         if (!row) throw new Error(`fake prisma: ${String(name)} not found`);
         applyUpdate(row, data);
         return out(row, args);
+      },
+      updateMany: async ({ where, data }: Row) => {
+        const hit = rows().filter((r) => matches(r, where));
+        hit.forEach((r) => applyUpdate(r, data));
+        return { count: hit.length };
       },
       deleteMany: async ({ where }: Row = {}) => {
         const keep = rows().filter((r) => !matches(r, where));
@@ -123,7 +136,10 @@ export function createFakePrisma(db: FakeDb = emptyDb()) {
     attachment: model('attachments', () => ({ createdAt: now() })),
     auditLog: model('auditLogs', () => ({ actorType: 'HUMAN', actorId: null, ticketId: null, oldValue: null, newValue: null, createdAt: now() })),
     notification: model('notifications', () => ({ isRead: false, channel: 'in_app', ticketId: null, createdAt: now() })),
-    kbArticle: model('kbArticles', () => ({ status: 'DRAFT', version: 1, createdAt: now() })),
+    kbArticle: model('kbArticles', () => ({
+      status: 'DRAFT', version: 1, tags: [], visibilityRole: 'EMPLOYEE', categoryId: null, reviewerId: null, publishedAt: null, sourceTicketId: null, createdAt: now(),
+    })),
+    aiInteraction: model('aiInteractions', () => ({ createdAt: now() })),
   };
   // routes only use the callback form of $transaction
   prisma.$transaction = async (arg: any) => (typeof arg === 'function' ? arg(prisma) : Promise.all(arg));

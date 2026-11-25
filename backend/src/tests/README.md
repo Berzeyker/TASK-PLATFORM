@@ -60,10 +60,43 @@ No `.env.test` in CI. Provide the branch as secrets and run:
 are each caught by at least one test. The one exception is "allow `CLOSED -> REOPENED`", an equivalent mutant: the BR-03 guard rejects
 every move out of `CLOSED` before the transition table is consulted.
 
+## What B-02 covers (`security.*.test.ts`)
+
+| File | Covers |
+|---|---|
+| `security.rbac.test.ts` | A **permission matrix over every route x every role + anonymous** (28 routes x 5 principals = 140 cases). A completeness test compares it with the routes Express actually registers, so adding a route without a matrix entry fails the build. Plus: employees reaching each other's notifications, mass assignment (ticket, user, KB article), and the KB review workflow (author cannot approve their own article, only reviewers publish, employees see only published employee-visible articles). |
+| `security.auth.test.ts` | Missing, malformed, expired, wrong-secret, tampered, `alg:none`, wrong-algorithm and bad-subject tokens (401). **Revocation**: a deactivated user, a demotion and a promotion apply at once to tokens already issued. Login: generic error for unknown / wrong / inactive (no user enumeration), payload validation, 15-minute tokens. Hardening: headers, CORS, malformed JSON, 1 MB body limit. **No response leaks a password hash** (scans 16 endpoints for the field name, the bcrypt pattern and every stored hash). |
+| `security.lockout.test.ts` | 5 failures lock for 15 minutes (even the right password gets 429), a success resets the counter, lock is per account, expiry restores access. |
+| `security.ratelimit.test.ts` | The 31st login in 15 minutes gets 429. |
+| `security.uploads.test.ts` | Fake PDF / PNG / JPEG, binary "text", MIME vs extension mismatch, executables, HTML and SVG, double extensions, wrong field name, 6 files, a bad file among good ones, 10 MB + 1 byte: all 400 and **nothing left on disk or in the database**. Valid files are stored under random names; traversal in file names; authorization happens before any write; downloads are owner/staff only, forced `attachment`, `nosniff`; internal storage details never reach clients. |
+
+### Decisions and fixes made in B-02
+
+- **`authenticate` now checks the database on every request** (one primary-key lookup) and takes the role from there, not from the token.
+  Deactivating an account or changing a role (B-05) applies immediately instead of after the 15-minute token expires.
+  Also: the JWT algorithm is pinned to HS256, and a non-integer `sub` is a 401 (it used to reach Prisma and would have been a 500).
+  If the extra query ever matters, add a 30-second in-memory cache and clear it in `PUT /admin/users/:id`.
+- `PUT /kb/articles/:id/status` checks the role before looking up the article (an employee used to get 404 for a missing article and 403 for a real one, which reveals which ids exist).
+- Malformed JSON now returns 400 and an oversized body 413 (both used to be 500).
+- Attachment responses no longer include `storagePath` (the server-side file name) or internal user ids.
+
+### Findings left open (decide when convenient)
+
+1. **Login timing**: an unknown email skips bcrypt, so it answers faster than a wrong password. Compare against a dummy hash to even it out.
+2. **Lockout is a denial-of-service lever**: anyone who knows an email can lock that account for 15 minutes. After the lock expires `failedLoginCount` is still 5, so one wrong guess re-locks it.
+3. **The rate limiter is per client IP**. Behind a reverse proxy (Render, Railway, nginx) every user shares the proxy's IP until `app.set('trust proxy', ...)` is configured: an I-01 deployment item.
+4. **Managers can upload attachments to any ticket** (`isStaff` includes MANAGER). Probably unintended; the matrix documents the current behaviour.
+5. **Existence probing**: `GET /tickets/:id` answers 403 for someone else's ticket and 404 for a missing one (B-01 requires the 403), and attachment ids are sequential. Ticket ids are random; attachment ids are not.
+6. `JWT_SECRET` strength is not enforced (consider a minimum length outside development).
+7. The plain-text upload check only inspects the first 1 KB for NUL bytes.
+8. Unknown routes return Express's default HTML 404 rather than JSON.
+
 ## Limits
 
 - `test:offline` checks route logic only. Constraints, transactions and Postgres behaviour are exercised only by `npm test`.
 - `admin-management.test.ts` (B-05) is mock-based and never touches a database, even under `npm test`.
+- The serializable "last active admin" guard in `PUT /admin/users/:id` is now only reachable by two admins removing each other at the same moment, which a sequential test cannot reproduce. It needs a concurrency test on a real database.
+- Equivalent mutants (removing one of two overlapping guards changes nothing observable): the 5-file upload limit is enforced twice, `path.basename` on the client file name is redundant with busboy, and `.strict()` on the admin user update only rejects what zod would strip anyway.
 - Needs Node 18, 20 or 22 (Vitest is pinned to v3 so the Node 20 Docker image keeps working).
 
 ## Dev harness

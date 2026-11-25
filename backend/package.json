@@ -11,7 +11,7 @@
     "test": "vitest run",
     "test:offline": "vitest run --config vitest.offline.config.ts",
     "test:watch": "vitest --config vitest.offline.config.ts",
-    "typecheck": "tsc --noEmit && tsc --noEmit -p tests"
+    "typecheck": "tsc --noEmit && tsc --noEmit -p src/tests"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
