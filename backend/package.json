@@ -7,7 +7,11 @@
     "build": "prisma generate && tsc",
     "start": "node dist/src/server.js",
     "migrate": "prisma migrate dev",
-    "seed": "tsx prisma/seed.ts"
+    "seed": "tsx prisma/seed.ts",
+    "test": "vitest run",
+    "test:offline": "vitest run --config vitest.offline.config.ts",
+    "test:watch": "vitest --config vitest.offline.config.ts",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tests"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -30,9 +34,13 @@
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/multer": "^2.3.0",
-    "@types/node": "^20.14.0",
+    "@types/node": "^20.19.43",
+    "@types/supertest": "^7.2.1",
     "prisma": "^5.22.0",
+    "supertest": "^7.3.2",
     "tsx": "^4.19.0",
-    "typescript": "^5.6.0"
+    "typescript": "^5.6.0",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.2"
   }
 }
