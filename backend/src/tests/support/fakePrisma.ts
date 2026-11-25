@@ -6,11 +6,11 @@
 export type Row = Record<string, any>;
 export type FakeDb = {
   users: Row[]; categories: Row[]; tickets: Row[]; attachments: Row[];
-  auditLogs: Row[]; notifications: Row[]; kbArticles: Row[]; aiInteractions: Row[]; seq: Record<string, number>;
+  auditLogs: Row[]; notifications: Row[]; kbArticles: Row[]; aiInteractions: Row[]; aiFeedbacks: Row[]; seq: Record<string, number>;
 };
 
 export const emptyDb = (): FakeDb => ({
-  users: [], categories: [], tickets: [], attachments: [], auditLogs: [], notifications: [], kbArticles: [], aiInteractions: [], seq: {},
+  users: [], categories: [], tickets: [], attachments: [], auditLogs: [], notifications: [], kbArticles: [], aiInteractions: [], aiFeedbacks: [], seq: {},
 });
 
 const isPlainObject = (v: unknown): v is Row => !!v && typeof v === 'object' && !(v instanceof Date) && !Array.isArray(v);
@@ -141,6 +141,7 @@ export function createFakePrisma(db: FakeDb = emptyDb()) {
       status: 'DRAFT', version: 1, tags: [], visibilityRole: 'EMPLOYEE', categoryId: null, reviewerId: null, publishedAt: null, sourceTicketId: null, createdAt: now(),
     })),
     aiInteraction: model('aiInteractions', () => ({ createdAt: now() })),
+    aiFeedback: model('aiFeedbacks', () => ({ createdAt: now() })),
   };
   // routes only use the callback form of $transaction
   prisma.$transaction = async (arg: any) => (typeof arg === 'function' ? arg(prisma) : Promise.all(arg));

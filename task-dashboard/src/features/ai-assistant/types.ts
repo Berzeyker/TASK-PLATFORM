@@ -19,6 +19,7 @@ export interface TroubleshootResponse {
     sources: SourceCitation[];
     should_escalate: boolean;
     escalation_reason: string | null;
+    interactionId?: number;
 }
 
 export interface IngestArticleRequest {

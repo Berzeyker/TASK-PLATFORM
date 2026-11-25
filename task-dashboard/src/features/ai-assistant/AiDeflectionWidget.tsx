@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { askAssistant } from '../ai-assistant/api'
+import { askAssistant, submitAiFeedback } from '../ai-assistant/api'
 import type { TroubleshootResponse } from '../ai-assistant/types'
 
 const DEBOUNCE_MS = 1500
@@ -19,6 +19,7 @@ export function AiDeflectionWidget({ title, description, token, onResolved, onNo
   const [result, setResult] = useState<TroubleshootResponse | null>(null)
   const [error, setError] = useState('')
   const [feedbackSent, setFeedbackSent] = useState(false)
+  const [interactionId, setInteractionId] = useState<number | null>(null)
 
   useEffect(() => {
     const t = title.trim()
@@ -26,6 +27,7 @@ export function AiDeflectionWidget({ title, description, token, onResolved, onNo
     if (t.length < MIN_LENGTH || d.length < MIN_LENGTH) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setResult(null)
+      setInteractionId(null)
       setError('')
       return
     }
@@ -40,6 +42,7 @@ export function AiDeflectionWidget({ title, description, token, onResolved, onNo
         const response = await askAssistant(token, { title: t, description: d, top_k: 3 })
         clearTimeout(timeoutId)
         setResult(response)
+        setInteractionId(response.interactionId ?? null)
       } catch {
         clearTimeout(timeoutId)
         // Hide silently on failure (NFR-11)
@@ -113,7 +116,7 @@ export function AiDeflectionWidget({ title, description, token, onResolved, onNo
           )}
           {!feedbackSent ? (
             <div className="ai-deflection-actions">
-              <button type="button" className="primary-action" onClick={() => { setFeedbackSent(true); onResolved() }}>
+              <button type="button" className="primary-action" onClick={() => { setFeedbackSent(true); if (interactionId != null) void submitAiFeedback(token, { interactionId, rating: 5 }).catch(() => {}); onResolved() }}>
                 Sí, esto resolvió mi problema
               </button>
               <button type="button" className="secondary-action" onClick={onNotResolved}>
@@ -125,7 +128,8 @@ export function AiDeflectionWidget({ title, description, token, onResolved, onNo
               <p>¡Gracias! Tu caso se marcó como resuelto por la IA.</p>
               <div className="rating-stars">
                 {[1, 2, 3, 4, 5].map((star) => (
-                  <button key={star} type="button" className="rating-star" aria-label={`${star} estrella${star > 1 ? 's' : ''}`}>
+                  <button key={star} type="button" className="rating-star" aria-label={`${star} estrella${star > 1 ? 's' : ''}`}
+                      onClick={() => { if (interactionId != null) void submitAiFeedback(token, { interactionId, rating: star }).catch(() => {}) }}>
                     ★
                   </button>
                 ))}

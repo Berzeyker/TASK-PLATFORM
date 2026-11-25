@@ -61,6 +61,9 @@ const MATRIX: Route[] = [
   { key: 'POST /api/v1/kb/articles', path: () => '/api/v1/kb/articles', allowed: ['AGENT', 'ADMIN'], body: {} },
   { key: 'PUT /api/v1/kb/articles/:p', path: (f) => `/api/v1/kb/articles/${f.articleId}`, allowed: ['AGENT', 'ADMIN'], body: {} },
   { key: 'PUT /api/v1/kb/articles/:p/status', path: (f) => `/api/v1/kb/articles/${f.articleId}/status`, allowed: STAFF, body: { status: 'NOT_A_STATUS' } },
+
+  { key: 'POST /api/v1/ai/query', path: () => '/api/v1/ai/query', allowed: 'authenticated', body: { title: 'x', description: 'y' } },
+  { key: 'POST /api/v1/ai/feedback', path: () => '/api/v1/ai/feedback', allowed: 'authenticated', body: { interactionId: 1, rating: 5 } },
 ];
 
 let a: Actors;

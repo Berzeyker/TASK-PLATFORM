@@ -12,7 +12,7 @@ incidentes de Nivel 1 y, si no tiene una respuesta confiable, escala el caso a u
 | `backend/`        | Node.js 20 + Express 4 + Prisma 5   | `3000`             |
 | `ai-service/`     | Python + FastAPI + ChromaDB + Groq  | `8001`             |
 
-Flujo de la IA: `Dashboard → Express (/api/v1/kb/troubleshoot) → FastAPI (/api/v1/rag/troubleshoot) → ChromaDB + Groq`.
+Flujo de la IA: `Dashboard → Express (/api/v1/ai/query) → FastAPI (/api/v1/rag/troubleshoot) → ChromaDB + Groq`. Feedback: `Dashboard → Express (/api/v1/ai/feedback)`.
 El frontend nunca llama al microservicio de IA directamente.
 
 ## Requisitos

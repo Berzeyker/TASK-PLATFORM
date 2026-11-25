@@ -11,6 +11,7 @@ import { notificationsRouter } from './routes/notifications';
 import { metricsRouter } from './routes/metrics';
 import { attachmentsRouter } from './routes/attachments';
 import { kbRouter } from './routes/kb';
+import { aiRouter } from './routes/ai';
 
 export const app = express();
 app.use(helmet());
@@ -26,4 +27,5 @@ app.use('/api/v1/notifications', notificationsRouter);
 app.use('/api/v1/metrics', metricsRouter);
 app.use('/api/v1/attachments', attachmentsRouter);
 app.use('/api/v1/kb', kbRouter);
+app.use('/api/v1/ai', aiRouter);
 app.use(errorHandler);

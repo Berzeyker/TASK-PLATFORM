@@ -8,10 +8,24 @@ import type { TroubleshootRequest, TroubleshootResponse } from './types'
  * red aquí solo ocurre si el backend mismo no responde.
  */
 export function askAssistant(token: string, input: TroubleshootRequest): Promise<TroubleshootResponse> {
-  return apiRequest<TroubleshootResponse>('/kb/troubleshoot', {
+  return apiRequest<TroubleshootResponse>('/ai/query', {
     token,
     method: 'POST',
     body: input,
     timeoutMs: 30000,
+  })
+}
+
+export interface AiFeedbackInput {
+  interactionId: number
+  rating: number
+  comment?: string
+}
+
+export function submitAiFeedback(token: string, input: AiFeedbackInput): Promise<{ id: number }> {
+  return apiRequest<{ id: number }>('/ai/feedback', {
+    token,
+    method: 'POST',
+    body: input,
   })
 }
